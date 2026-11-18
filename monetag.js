@@ -9,7 +9,8 @@
  */
 class MonetagManager {
     constructor() {
-        this.zoneId = localStorage.getItem('monetag_zone_id') || '';
+        this.zoneId = '12291920'; // Mã Zone ID chính thức từ Monetag Telegram Mini App
+        localStorage.setItem('monetag_zone_id', this.zoneId);
         this.isWatching = false;
         this.cooldownSeconds = 30 * 60; // Cooldown 30 phút giữa các lượt xem thông thường
         this.maxDailyAds = 24;          // Tối đa 24 lượt nhận thưởng mỗi ngày
@@ -62,17 +63,20 @@ class MonetagManager {
 
     loadMonetagSdk() {
         if (!this.zoneId) return;
+        if (typeof window['show_' + this.zoneId] === 'function') return;
+
         const existingScript = document.getElementById('monetag-tag-script');
         if (existingScript) existingScript.remove();
 
         try {
             const script = document.createElement('script');
             script.id = 'monetag-tag-script';
-            script.src = 'https://alwingulla.com/88/tag.min.js';
+            script.src = 'https://libtl.com/sdk.js';
             script.setAttribute('data-zone', this.zoneId);
+            script.setAttribute('data-sdk', 'show_' + this.zoneId);
             script.async = true;
             document.head.appendChild(script);
-            console.log(`[Monetag] Đã nạp SDK với Zone ID: ${this.zoneId}`);
+            console.log(`[Monetag TMA] Đã nạp SDK libtl.com với Zone ID: ${this.zoneId}`);
         } catch (e) {
             console.warn('[Monetag] Lỗi nạp SDK:', e);
         }
@@ -106,42 +110,14 @@ class MonetagManager {
     }
 
     // ==========================================
-    // LÁ CHẮN CHỐNG NHẢY LINK NGOÀI (ANTI-REDIRECT SHIELD)
+    // CHÍNH SÁCH BẢO VỆ TÀI KHOẢN MONETAG
     // ==========================================
     enableAntiRedirectShield() {
-        if (this.antiRedirectActive) return;
-        this.antiRedirectActive = true;
-        this.originalWindowOpen = window.open;
-
-        // Chặn window.open mở tab nhảy trang quảng cáo
-        window.open = function(url, ...rest) {
-            console.warn('[Monetag Anti-Redirect] Đã chặn lệnh mở link ra ngoài trang game:', url);
-            return null;
-        };
-
-        // Chặn click các liên kết ngoài trong khi xem quảng cáo
-        this._shieldClickHandler = (e) => {
-            const anchor = e.target.closest('a');
-            if (anchor && anchor.href && !anchor.href.includes(window.location.host)) {
-                e.preventDefault();
-                e.stopPropagation();
-                console.warn('[Monetag Anti-Redirect] Đã chặn click chuyển hướng ra link ngoài:', anchor.href);
-            }
-        };
-        window.addEventListener('click', this._shieldClickHandler, true);
+        // Tuân thủ 100% chính sách Monetag: Không can thiệp hoặc chặn window.open của quảng cáo
+        // Điều này đảm bảo Monetag không khóa tài khoản vì lỗi "Ad Tampering / Fraudulent Traffic"
     }
 
     disableAntiRedirectShield() {
-        if (!this.antiRedirectActive) return;
-        this.antiRedirectActive = false;
-        if (this.originalWindowOpen) {
-            window.open = this.originalWindowOpen;
-            this.originalWindowOpen = null;
-        }
-        if (this._shieldClickHandler) {
-            window.removeEventListener('click', this._shieldClickHandler, true);
-            this._shieldClickHandler = null;
-        }
     }
 
     // ==========================================
@@ -181,100 +157,48 @@ class MonetagManager {
     }
 
     // ==========================================
-    // PHÁT 1 QUẢNG CÁO MONETAG BẮT BUỘC XEM ĐỦ 15S
+    // PHÁT 1 QUẢNG CÁO MONETAG REWARDED (SDK LIBTL.COM)
     // ==========================================
     playSingleMonetagAd(placement = 'general', displayIndex = 1, totalAds = 1) {
         return new Promise(async (resolve) => {
-            this.enableAntiRedirectShield();
-
             // 1. Khởi tạo phiên xem với Server để lấy token chống hack
             const session = await this.startServerAdSession(placement);
             const token = session ? session.token : null;
-            const requiredSec = (session && session.minDurationSec) || 15;
 
-            // 2. Thử gọi hàm SDK Monetag nếu người dùng đã nhập Zone ID hợp lệ
             const globalFnName = 'show_' + this.zoneId;
-            let usedSdk = false;
 
-            if (this.zoneId && typeof window[globalFnName] === 'function') {
-                try {
-                    this.showToast(`💎 Đang kết nối Monetag Zone ${this.zoneId}...`, 'info');
-                    usedSdk = true;
-                    // Bật trình bảo vệ overlay trong khi SDK chạy
-                    await window[globalFnName]();
-                } catch (sdkErr) {
-                    console.warn('[Monetag SDK] Gặp lỗi khi gọi show_XXX:', sdkErr);
-                    usedSdk = false;
-                }
+            // Kiểm tra xem SDK Monetag đã sẵn sàng chưa (nếu bật AdBlock sẽ bị chặn ở đây)
+            if (typeof window[globalFnName] !== 'function') {
+                console.warn(`[Monetag TMA] Hàm ${globalFnName} chưa sẵn sàng hoặc bị chặn.`);
+                this.showToast('⚠️ Không thể tải video quảng cáo! Vui lòng tắt trình chặn quảng cáo (AdBlock) để nhận thưởng.', 'error');
+                resolve(false);
+                return;
             }
 
-            // 3. Hiển thị Trình xem Video Monetag chính thức (Bắt buộc xem đủ 15s, cấm bỏ qua, chặn link ngoài)
-            const modal = document.getElementById('modal-monetag-ad');
-            const timerEl = document.getElementById('monetag-ad-timer');
-            const progressEl = document.getElementById('monetag-ad-progress');
-            const subTitleEl = document.getElementById('monetag-ad-sub');
-            const counterBadgeEl = document.getElementById('monetag-ad-badge');
+            try {
+                this.showToast(`💎 Đang mở video quảng cáo Monetag ${totalAds > 1 ? `(${displayIndex}/${totalAds})` : ''}...`, 'info');
 
-            if (!modal) {
-                // Dự phòng nếu modal chưa mount
-                await new Promise(r => setTimeout(r, requiredSec * 1000));
-                this.disableAntiRedirectShield();
+                // 2. Gọi hàm SDK chính thức của Monetag (tự động hiện popup video full-screen)
+                await window[globalFnName]();
+
+                // 3. Người dùng đã xem xong video: Kiểm tra xác thực Server-side (Chống Hack Tua Giờ)
                 if (token) {
                     const ver = await this.verifyServerAdSession(token, placement);
                     if (!ver.ok) {
-                        this.showToast(ver.error || 'Xác thực quảng cáo thất bại!', 'error');
+                        this.showToast(ver.error || 'Phát hiện gian lận thời gian xem quảng cáo!', 'error');
                         resolve(false);
                         return;
                     }
                 }
+
                 this.recordSuccess();
+                this.showToast('🎉 Đã xác nhận xem quảng cáo Monetag thành công!', 'success');
                 resolve(true);
-                return;
+            } catch (sdkErr) {
+                console.warn('[Monetag TMA] Người dùng tắt hoặc bỏ qua video:', sdkErr);
+                this.showToast('Bạn chưa xem hết video nên chưa thể nhận thưởng!', 'warning');
+                resolve(false);
             }
-
-            modal.classList.remove('hidden');
-            if (counterBadgeEl) {
-                counterBadgeEl.innerText = totalAds > 1 ? `Quảng Cáo ${displayIndex}/${totalAds}` : 'Quảng Cáo Monetag';
-            }
-            if (subTitleEl) {
-                subTitleEl.innerText = totalAds > 1
-                    ? `Vui lòng xem đủ 15 giây video ${displayIndex}/${totalAds} để nhận thưởng (Không thể bỏ qua)`
-                    : `Vui lòng xem hết 15 giây video đối tác Monetag để nhận thưởng (Không thể bỏ qua)`;
-            }
-
-            let timeLeft = requiredSec;
-            if (timerEl) timerEl.innerText = timeLeft;
-            if (progressEl) progressEl.style.width = '0%';
-
-            let elapsedCount = 0;
-            const timerInterval = setInterval(async () => {
-                elapsedCount++;
-                timeLeft--;
-                if (timerEl && timeLeft >= 0) timerEl.innerText = timeLeft;
-                if (progressEl) {
-                    const pct = Math.min(100, Math.round((elapsedCount / requiredSec) * 100));
-                    progressEl.style.width = `${pct}%`;
-                }
-
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    modal.classList.add('hidden');
-                    this.disableAntiRedirectShield();
-
-                    // Xác thực phiên xem hợp lệ trên Server (Chống Hack)
-                    if (token) {
-                        const ver = await this.verifyServerAdSession(token, placement);
-                        if (!ver.ok) {
-                            this.showToast(ver.error || 'Phát hiện gian lận quảng cáo!', 'error');
-                            resolve(false);
-                            return;
-                        }
-                    }
-
-                    this.recordSuccess();
-                    resolve(true);
-                }
-            }, 1000);
         });
     }
 
