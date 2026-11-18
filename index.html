@@ -1,0 +1,2143 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Nông Trại & Làng Chài Thần Tài - Lucky Farm & Fishing</title>
+    <!-- Telegram WebApp SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- Monetag Ads SDK Tag Loader -->
+    <script>
+        (function() {
+            const zoneId = localStorage.getItem('monetag_zone_id') || '';
+            if (zoneId) {
+                const s = document.createElement('script');
+                s.id = 'monetag-tag-script';
+                s.src = 'https://alwingulla.com/88/tag.min.js';
+                s.setAttribute('data-zone', zoneId);
+                s.async = true;
+                document.head.appendChild(s);
+            }
+        })();
+    </script>
+    <!-- Google Fonts & Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4ade80">
+</head>
+<body class="bg-slate-900 text-slate-800 font-['Nunito'] select-none overflow-hidden h-screen w-screen flex justify-center items-center">
+
+    <!-- Khung mô phỏng màn hình điện thoại (Max Width 460px) -->
+    <div id="app-container" class="relative w-full max-w-[460px] h-full max-h-[920px] bg-gradient-to-b from-sky-200 via-emerald-50 to-amber-50 shadow-2xl flex flex-col overflow-hidden sm:rounded-3xl sm:border-4 sm:border-slate-800">
+        
+        <!-- HEADER: Thông tin tài nguyên, Cấp độ & Nhiệm vụ -->
+        <header class="bg-gradient-to-r from-emerald-800 via-emerald-700 to-teal-700 text-white px-3 py-2 shadow-lg z-20 flex flex-col gap-1.5 border-b-2 border-emerald-950">
+            <div class="flex justify-between items-center">
+                <!-- User Level & EXP (Bấm vào để mở Tài Khoản & Đăng Xuất) -->
+                <button type="button" id="btn-player-avatar" class="flex items-center gap-2 text-left rounded-2xl pr-1.5 hover:bg-white/10 active:scale-95 transition cursor-pointer" title="Tài khoản & Đăng xuất">
+                    <div class="relative">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-amber-500 to-yellow-300 border-2 border-white flex items-center justify-center font-black text-slate-900 text-base shadow-md">
+                            <span id="player-level">1</span>
+                        </div>
+                        <span class="absolute -bottom-1 -right-1 text-[9px] bg-rose-600 text-white font-black px-1 rounded-full uppercase border border-white/50">Lv</span>
+                    </div>
+                    <div class="flex flex-col justify-center gap-0.5">
+                        <div class="relative w-24 bg-emerald-950/90 h-2.5 rounded-full overflow-hidden border border-emerald-400/40 shadow-inner">
+                            <div id="player-exp-bar" class="bg-gradient-to-r from-yellow-400 to-amber-500 h-full w-[20%] transition-all duration-300"></div>
+                        </div>
+                        <div class="text-[8.5px] font-black text-amber-200/90 leading-none px-0.5 whitespace-nowrap">
+                            <span id="player-exp-text">0 / 100 EXP</span>
+                        </div>
+                    </div>
+                </button>
+
+                <!-- VIP, Nạp Tiền, Nhiệm Vụ Ngày, Âm thanh & Cài đặt -->
+                <div class="flex items-center gap-1">
+                    <button id="btn-open-vip" class="px-2 py-1 bg-gradient-to-b from-amber-300 via-yellow-400 to-amber-500 text-amber-950 rounded-xl border-b-2 border-amber-700 font-black text-[10px] shadow active:scale-95 flex items-center gap-0.5 relative" title="Đặc quyền VIP & Mua VIP bằng Kim Cương">
+                        <span>👑 VIP</span>
+                        <span id="vip-header-dot" class="hidden w-2 h-2 rounded-full bg-rose-600 animate-ping"></span>
+                    </button>
+                    <button id="btn-daily-quests" class="px-2 py-1 bg-gradient-to-b from-amber-400 to-amber-500 text-slate-950 rounded-xl border-b-2 border-amber-700 font-black text-[10px] shadow active:scale-95 flex items-center gap-1">
+                        <span>🎁 N.Vụ</span>
+                        <span id="quest-notify-dot" class="hidden w-2 h-2 rounded-full bg-rose-600 animate-ping"></span>
+                    </button>
+                    <button id="btn-sound" class="p-1.5 bg-emerald-900/80 rounded-xl border border-emerald-500/50 hover:bg-emerald-600 text-xs transition active:scale-95" title="Bật/Tắt Âm thanh">
+                        🔊
+                    </button>
+                    <button id="btn-settings" class="hidden p-1.5 bg-emerald-900/80 rounded-xl border border-emerald-500/50 hover:bg-emerald-600 text-xs transition active:scale-95" title="Cài đặt & Quản trị (Chỉ Chủ Game)">
+                        ⚙️
+                    </button>
+                </div>
+            </div>
+
+            <!-- 3 Loại Tiền Trong Game: Vàng, Kim Cương, VND + Thể Lực -->
+            <div class="grid grid-cols-2 gap-1.5 text-xs">
+                <!-- Vàng (Dùng mua hạt giống, vật nuôi, mở đất) -->
+                <div class="flex items-center justify-between bg-emerald-950/65 px-2.5 py-1 rounded-xl border border-yellow-400/35 shadow-inner">
+                    <span class="text-[10px] font-bold text-yellow-200/90 flex items-center gap-1"><span class="gold-bar-icon text-sm" aria-label="Vàng"></span> Vàng</span>
+                    <span id="player-gold" class="font-black text-yellow-300 truncate">500</span>
+                </div>
+                <!-- Kim Cương -->
+                <div class="flex items-center justify-between bg-emerald-950/65 px-2.5 py-1 rounded-xl border border-cyan-400/35 shadow-inner">
+                    <span class="text-[10px] font-bold text-cyan-200/80">💎 Kim Cương</span>
+                    <span id="player-diamonds" class="font-black text-cyan-300 truncate">0</span>
+                </div>
+                <!-- VND (Thu được từ bán nông sản & vật nuôi) -->
+                <div class="flex items-center justify-between bg-emerald-950/65 px-2.5 py-1 rounded-xl border border-emerald-400/45 shadow-inner">
+                    <span class="text-[10px] font-bold text-emerald-200/90">💵 VND</span>
+                    <span id="player-vnd" class="font-black text-emerald-300 truncate">0</span>
+                </div>
+                <!-- QC Nhận Vàng (Xem 2 quảng cáo Monetag nhận 1 Vàng, cứ sau 1h nhận 1 lần, tối đa 24 lần/ngày) -->
+                <div id="ad-gold-2h-slot" class="flex items-center justify-between bg-emerald-950/65 px-2.5 py-1 rounded-xl border border-yellow-400/40 shadow-inner" title="Xem 2 quảng cáo Monetag nhận 1 Vàng (cứ sau 1h nhận 1 lần, tối đa 24 lần/ngày)">
+                    <div class="flex items-center gap-1.5 min-w-0">
+                        <span class="text-sm select-none">💰</span>
+                        <span id="ad-gold-status" class="hidden"></span>
+                        <span id="ad-gold-count" class="text-[9.5px] font-bold text-emerald-300">0/24 lượt</span>
+                    </div>
+                    <button type="button" id="btn-ad-gold-claim" class="text-[9.5px] bg-gradient-to-r from-amber-400 to-yellow-300 hover:brightness-110 text-slate-950 font-black px-2 py-1 rounded-lg active:scale-95 shadow transition cursor-pointer flex-shrink-0">
+                        ▶ +1💰
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- MAIN DISPLAY -->
+        <main class="flex-1 relative overflow-y-auto overflow-x-hidden p-2.5 pb-20 scrollbar-none">
+            
+            <!-- VIEW 1: VƯỜN CÂY 4D (MỖI MẢNH ĐẤT LỚN 36 Ô: 6x6 x 3 CẤP = 108 Ô) -->
+            <section id="view-farm" class="game-view flex flex-col gap-2.5">
+                <!-- Banner Khung Cảnh Làng Quê 4D Ánh Nắng & Bướm Bay -->
+                <div class="relative h-[88px] rounded-2xl overflow-hidden border-2 border-emerald-700 shadow-lg bg-gradient-to-b from-sky-400 via-sky-200 to-emerald-400">
+                    <svg class="absolute inset-0 w-full h-full" preserveAspectRatio="none" viewBox="0 0 400 100">
+                        <defs>
+                            <radialGradient id="sunGlow" cx="85%" cy="20%" r="45%">
+                                <stop offset="0%" stop-color="#fef08a" stop-opacity="0.95"/>
+                                <stop offset="50%" stop-color="#fde047" stop-opacity="0.35"/>
+                                <stop offset="100%" stop-color="#fde047" stop-opacity="0"/>
+                            </radialGradient>
+                            <linearGradient id="farHill" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#4ade80"/>
+                                <stop offset="100%" stop-color="#15803d"/>
+                            </linearGradient>
+                            <linearGradient id="nearHill" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#65a30d"/>
+                                <stop offset="100%" stop-color="#365314"/>
+                            </linearGradient>
+                        </defs>
+                        <rect width="400" height="100" fill="url(#sunGlow)"/>
+                        <circle cx="345" cy="22" r="14" fill="#fef9c3"/>
+                        <path d="M0 68 Q100 32 220 62 T400 50 L400 100 L0 100 Z" fill="url(#farHill)"/>
+                        <path d="M0 78 Q140 52 280 76 T400 72 L400 100 L0 100 Z" fill="url(#nearHill)"/>
+                        <g transform="translate(26, 36)">
+                            <polygon points="0,18 22,2 44,18" fill="#dc2626" stroke="#7f1d1d" stroke-width="1.5"/>
+                            <rect x="4" y="18" width="36" height="26" fill="#b91c1c"/>
+                            <rect x="40" y="18" width="12" height="26" fill="#7f1d1d"/>
+                            <polygon points="22,2 44,18 54,14 32,0" fill="#991b1b"/>
+                            <rect x="14" y="25" width="14" height="19" fill="#fef3c7" rx="1"/>
+                        </g>
+                    </svg>
+                    <div class="sunbeam-overlay absolute inset-0"></div>
+                    <div class="animate-butterfly absolute top-3 left-24 text-sm drop-shadow">🦋</div>
+
+                    <!-- Bỏ nút Tưới Nhanh (Ảnh 3) & Đưa thông tin Trang Trại 4D (Ảnh 4) vào chính giữa Banner -->
+                    <div class="relative z-10 h-full px-3 py-2 flex justify-center items-center">
+                        <div class="bg-black/55 backdrop-blur-xs text-white px-4 py-2 rounded-2xl border border-white/25 shadow-lg text-center">
+                            <div class="text-[10.5px] font-bold text-amber-200">🌾 Trang Trại 4D • Tổng: <span id="total-unlocked-plots">1/108</span> Ô</div>
+                            <div class="text-xs font-black text-amber-100 mt-0.5" id="current-tier-buff-label">Đất Cấp 1: Phù Sa (1x Tốc độ)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SẠP NPC PHÚ NÔNG -->
+                <div id="npc-farm-stall" class="relative rounded-2xl border-2 border-[#8c5426] bg-gradient-to-r from-[#f4d58d] via-[#ecc371] to-[#dfb056] p-2.5 shadow-md flex items-center justify-between gap-2 overflow-hidden">
+                    <div class="flex items-center gap-2.5 min-w-0 cursor-pointer" onclick="game.openNpcShop('buy')">
+                        <!-- Minh họa NPC Cô Bé Tóc Cam & Các Thùng Nông Sản giống Ảnh 1 -->
+                        <svg viewBox="0 0 96 64" class="w-20 h-14 flex-shrink-0 drop-shadow">
+                            <!-- Nền đất cát dưới quầy hàng -->
+                            <ellipse cx="48" cy="48" rx="44" ry="14" fill="#d99f4c" opacity="0.65"/>
+                            <!-- Thùng gỗ trái chứa hạt/cây xanh -->
+                            <rect x="4" y="24" width="24" height="18" rx="2" fill="#8b4513" stroke="#5c2d0c" stroke-width="1.5"/>
+                            <line x1="4" y1="33" x2="28" y2="33" stroke="#5c2d0c" stroke-width="1.2"/>
+                            <circle cx="12" cy="24" r="5" fill="#38bdf8"/>
+                            <circle cx="20" cy="24" r="5" fill="#0ea5e9"/>
+                            <circle cx="16" cy="20" r="4.5" fill="#7dd3fc"/>
+                            <!-- Thùng gỗ phải chứa Cà rốt tươi -->
+                            <rect x="64" y="16" width="26" height="19" rx="2" fill="#9a4f1b" stroke="#5c2d0c" stroke-width="1.5"/>
+                            <line x1="64" y1="25" x2="90" y2="25" stroke="#5c2d0c" stroke-width="1.2"/>
+                            <polygon points="72,18 76,18 74,26" fill="#f97316"/>
+                            <polygon points="80,18 84,18 82,26" fill="#ea580c"/>
+                            <path d="M74,18 Q71,10 75,12 Q77,10 74,18 Z" fill="#16a34a"/>
+                            <path d="M82,18 Q79,10 83,12 Q85,10 82,18 Z" fill="#15803d"/>
+                            <!-- Giỏ thúng phía trước -->
+                            <ellipse cx="28" cy="48" rx="8" ry="4" fill="#78350f"/>
+                            <rect x="20" y="42" width="16" height="6" rx="2" fill="#92400e"/>
+                            <circle cx="25" cy="41" r="3.5" fill="#38bdf8"/>
+                            <circle cx="31" cy="41" r="3.5" fill="#60a5fa"/>
+                            <!-- Nhân vật NPC Cô Bé Nông Dân tóc cam -->
+                            <ellipse cx="50" cy="54" rx="10" ry="3.5" fill="rgba(0,0,0,0.28)"/>
+                            <!-- Áo đỏ + yếm xanh -->
+                            <rect x="42" y="38" width="16" height="14" rx="4" fill="#dc2626" stroke="#7f1d1d" stroke-width="1"/>
+                            <rect x="44" y="42" width="12" height="10" rx="2" fill="#1e3a8a"/>
+                            <!-- Đầu & tóc cam buộc đuôi ngựa -->
+                            <circle cx="58" cy="26" r="6" fill="#ea580c" stroke="#7c2d12" stroke-width="1"/>
+                            <rect x="41" y="21" width="17" height="16" rx="6" fill="#fde68a" stroke="#92400e" stroke-width="1.2"/>
+                            <path d="M40 27 Q41 16 50 16 Q59 16 59 27 Q54 23 45 25 Z" fill="#ea580c" stroke="#7c2d12" stroke-width="1"/>
+                            <!-- Mắt cười -->
+                            <circle cx="46" cy="30" r="1.3" fill="#1e293b"/>
+                            <circle cx="53" cy="30" r="1.3" fill="#1e293b"/>
+                            <circle cx="44" cy="33" r="1.2" fill="#fb7185" opacity="0.7"/>
+                            <circle cx="55" cy="33" r="1.2" fill="#fb7185" opacity="0.7"/>
+                        </svg>
+                        <div class="min-w-0">
+                            <div class="text-[12px] font-black text-[#4a260a] leading-tight">👩‍🌾 Phú Nông</div>
+                            <div class="text-[9.5px] font-bold text-[#78350f] leading-snug">Mua & Bán nông sản trực tiếp bằng Vàng!</div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-1 flex-shrink-0">
+                        <button id="btn-npc-open-buy" class="px-2.5 py-1 bg-gradient-to-b from-amber-300 to-amber-500 text-slate-950 font-black text-[10px] rounded-lg border border-[#78350f] shadow active:scale-95">
+                            🌱 Mua Ngay
+                        </button>
+                        <button id="btn-npc-open-sell" class="px-2.5 py-1 bg-gradient-to-b from-emerald-500 to-emerald-600 text-white font-black text-[10px] rounded-lg border border-emerald-900 shadow active:scale-95">
+                            🌻 Bán Ngay
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Chọn Mảnh Đất Cấp 1 / Cấp 2 / Cấp 3 (Mỗi mảnh 36 ô: 6x6) -->
+                <div class="grid grid-cols-3 gap-1.5 text-[10.5px] font-black">
+                    <button class="land-tier-tab active py-1.5 px-2 rounded-xl border-2 border-emerald-600 bg-emerald-600 text-white shadow transition" data-tier="1">
+                        🌱 Đất Cấp 1<br><span class="text-[9px] opacity-90" id="tier1-count">(1/36)</span>
+                    </button>
+                    <button class="land-tier-tab py-1.5 px-2 rounded-xl border-2 border-slate-300 bg-white text-slate-600 shadow transition" data-tier="2">
+                        🌿 Đất Cấp 2<br><span class="text-[9px] opacity-90" id="tier2-count">(0/36)</span>
+                    </button>
+                    <button class="land-tier-tab py-1.5 px-2 rounded-xl border-2 border-slate-300 bg-white text-slate-600 shadow transition" data-tier="3">
+                        🌟 Đất Cấp 3<br><span class="text-[9px] opacity-90" id="tier3-count">(0/36)</span>
+                    </button>
+                </div>
+
+                <!-- Thanh Thao Tác Nhanh: Gieo Ô Trồng, Tưới Nước & Thu Hoạch Hết -->
+                <div class="grid grid-cols-3 gap-1.5 text-[10.5px] font-black">
+                    <button id="btn-choose-seed" class="py-1.5 px-1 bg-emerald-100 hover:bg-emerald-200 text-emerald-950 rounded-xl border border-emerald-400 active:scale-95 flex items-center justify-center gap-0.5 truncate shadow-xs cursor-pointer" title="Bấm để chọn loại hạt giống gieo trồng">
+                        <span>🌱</span>
+                        <span id="current-selected-seed-label" class="truncate">Gieo: Rau Mầm</span>
+                    </button>
+                    <button id="btn-water-all" class="py-1.5 px-1 bg-sky-100 hover:bg-sky-200 text-sky-950 rounded-xl border border-sky-400 active:scale-95 flex items-center justify-center gap-0.5 shadow-xs cursor-pointer" title="Tưới nước cho cây trồng từ 1h trở lên bắt đầu lớn">
+                        <span>💧</span>
+                        <span>Tưới Nước</span>
+                    </button>
+                    <button id="btn-harvest-all" class="py-1.5 px-1 bg-amber-100 hover:bg-amber-200 text-amber-950 rounded-xl border border-amber-400 active:scale-95 flex items-center justify-center gap-0.5 shadow-xs cursor-pointer" title="Thu hoạch toàn bộ cây trồng đã chín">
+                        <span>✂️</span>
+                        <span>Thu Hoạch</span>
+                    </button>
+                </div>
+
+                <!-- MẢNH ĐẤT LỚN 6x6 (36 Ô ĐẤT HIỂN THỊ TỔNG QUÁT TRÊN MÀN HÌNH) -->
+                <div id="farm-parcel-board" class="farm-parcel-board rounded-2xl p-2">
+                    <div id="farm-grid" class="grid grid-cols-6 gap-1">
+                        <!-- Render đủ 36 ô đất từ JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 1A2: TÀI NGUYÊN & THỢ RÈN (KIỂU SUNFLOWER LAND ẢNH 1 & 2) -->
+            <section id="view-resources" class="game-view hidden flex flex-col gap-2.5">
+                <!-- NPC Thợ Rèn giống Ảnh 2 (Đứng cạnh Đe & Máng Nước trên cỏ xanh) -->
+                <div class="bg-[#efd3a3] rounded-2xl p-2 border-2 border-[#78350f] shadow flex items-center justify-between gap-2">
+                    <div class="flex items-center gap-2 min-w-0">
+                        <svg viewBox="0 0 80 64" class="w-14 h-12 flex-shrink-0 rounded-xl border border-[#78350f]/50 shadow-inner bg-[#6ec439]">
+                            <rect x="6" y="8" width="68" height="48" rx="6" fill="#9a5c32" stroke="#5c3010" stroke-width="1.5"/>
+                            <!-- Máng nước xanh phía sau -->
+                            <rect x="34" y="9" width="32" height="14" rx="2" fill="#64748b" stroke="#1e293b" stroke-width="1.4"/>
+                            <rect x="38" y="12" width="24" height="7" fill="#0284c7"/>
+                            <!-- Thùng đồ nghề bên trái -->
+                            <rect x="10" y="13" width="14" height="14" rx="2" fill="#b45309" stroke="#451a03" stroke-width="1.3"/>
+                            <rect x="12" y="11" width="10" height="5" fill="#94a3b8"/>
+                            <!-- Thợ Rèn đầu hói dễ thương -->
+                            <ellipse cx="48" cy="36" rx="9" ry="3" fill="rgba(0,0,0,0.28)"/>
+                            <rect x="41" y="25" width="14" height="11" rx="3" fill="#78350f" stroke="#451a03" stroke-width="1"/>
+                            <rect x="44" y="25" width="8" height="10" fill="#f1f5f9"/>
+                            <rect x="40" y="13" width="16" height="14" rx="6" fill="#fed7aa" stroke="#78350f" stroke-width="1.3"/>
+                            <rect x="39" y="16" width="2.5" height="6" fill="#94a3b8"/>
+                            <rect x="54.5" y="16" width="2.5" height="6" fill="#94a3b8"/>
+                            <circle cx="45" cy="21" r="1.3" fill="#1e293b"/>
+                            <circle cx="51" cy="21" r="1.3" fill="#1e293b"/>
+                            <circle cx="43.5" cy="23.5" r="1.1" fill="#fb7185" opacity="0.75"/>
+                            <circle cx="52.5" cy="23.5" r="1.1" fill="#fb7185" opacity="0.75"/>
+                            <!-- Đe Thợ Rèn màu xám phía trước -->
+                            <path d="M16 40 H36 L42 43 H33 V50 H21 V43 H16 Z" fill="#cbd5e1" stroke="#334155" stroke-width="1.5" stroke-linejoin="round"/>
+                        </svg>
+                        <div class="min-w-0">
+                            <div class="text-[12px] font-black text-[#4a260a] leading-tight">👷‍♂️ Thợ Rèn &amp; 4 Loại Cuốc</div>
+                            <div class="text-[9.5px] font-bold text-[#78350f] leading-snug">Chế tạo Cuốc Gỗ, Cuốc Đá, Cuốc Sắt, Cuốc Vàng để khai thác!</div>
+                        </div>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <button id="btn-open-blacksmith" class="px-3 py-2 bg-gradient-to-b from-amber-300 to-amber-500 text-slate-950 font-black text-[10.5px] rounded-xl border-2 border-[#78350f] shadow active:scale-95">
+                            ⚒️ Chế Tạo
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Thanh Công Cụ Đang Có & Tài Nguyên Kho (4 Tài Nguyên: Gỗ, Đá, Sắt, Vàng + 4 Cuốc Ảnh 1-8) -->
+                <div class="bg-[#efd3a3] rounded-2xl p-2 border-2 border-[#78350f] space-y-1.5 text-[10px] font-black text-[#4a260a]">
+                    <div class="grid grid-cols-4 gap-1 text-center">
+                        <div class="bg-[#fff2d6] border border-[#8a4f1d] rounded-lg py-1 px-1 flex flex-col items-center">
+                            <div id="tool-icon-pick_wood" class="w-6 h-6 flex items-center justify-center">⛏️</div>
+                            <div class="text-[9px] leading-tight">Cuốc Gỗ</div>
+                            <div id="tool-count-pick_wood" class="text-xs text-amber-800">0</div>
+                        </div>
+                        <div class="bg-[#fff2d6] border border-[#8a4f1d] rounded-lg py-1 px-1 flex flex-col items-center">
+                            <div id="tool-icon-pick_stone" class="w-6 h-6 flex items-center justify-center">⛏️</div>
+                            <div class="text-[9px] leading-tight">Cuốc Đá</div>
+                            <div id="tool-count-pick_stone" class="text-xs text-slate-700">0</div>
+                        </div>
+                        <div class="bg-[#fff2d6] border border-[#8a4f1d] rounded-lg py-1 px-1 flex flex-col items-center">
+                            <div id="tool-icon-pick_iron" class="w-6 h-6 flex items-center justify-center">⚒️</div>
+                            <div class="text-[9px] leading-tight">Cuốc Sắt</div>
+                            <div id="tool-count-pick_iron" class="text-xs text-sky-800">0</div>
+                        </div>
+                        <div class="bg-[#fff2d6] border border-[#8a4f1d] rounded-lg py-1 px-1 flex flex-col items-center">
+                            <div id="tool-icon-pick_gold" class="w-6 h-6 flex items-center justify-center">✨</div>
+                            <div class="text-[9px] leading-tight">Cuốc Vàng</div>
+                            <div id="tool-count-pick_gold" class="text-xs text-amber-600">0</div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-4 gap-1 text-center">
+                        <div class="bg-[#e3be84] border border-[#8a4f1d] rounded-lg py-1 px-1 flex items-center justify-center gap-1"><span id="res-icon-wood" class="inline-flex">🌳</span><span>Gỗ:</span><b id="res-count-wood">0</b></div>
+                        <div class="bg-[#e3be84] border border-[#8a4f1d] rounded-lg py-1 px-1 flex items-center justify-center gap-1"><span id="res-icon-stone" class="inline-flex">⛰️</span><span>Đá:</span><b id="res-count-stone">0</b></div>
+                        <div class="bg-[#e3be84] border border-[#8a4f1d] rounded-lg py-1 px-1 flex items-center justify-center gap-1"><span id="res-icon-iron" class="inline-flex">⚙️</span><span>Sắt:</span><b id="res-count-iron">0</b></div>
+                        <div class="bg-[#e3be84] border border-[#8a4f1d] rounded-lg py-1 px-1 flex items-center justify-center gap-1"><span id="res-icon-gold-ore" class="inline-flex">✨</span><span>Vàng:</span><b id="res-count-gold-ore">0</b></div>
+                    </div>
+                </div>
+
+                <!-- Khu Đảo Tài Nguyên (Chỉ hiển thị Cây Gỗ, Mỏ Đá, Mỏ Sắt, Mỏ Vàng mà nick này đang có!) -->
+                <div class="farm-parcel-board rounded-2xl p-2.5 space-y-2">
+                    <div class="flex items-center justify-between gap-1.5">
+                        <div class="text-white drop-shadow min-w-0">
+                            <div class="text-xs font-black">🏝️ Tài Nguyên Trên Đảo Của Bạn</div>
+                        </div>
+                        <div class="flex items-center gap-1 flex-shrink-0">
+                            <button id="btn-harvest-all-resources" class="px-2.5 py-1.5 bg-gradient-to-b from-amber-300 to-amber-500 text-slate-950 font-black rounded-xl border-2 border-[#5c3010] shadow active:scale-95 text-[10px]">
+                                ⛏️ Thu Hết
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="island-resource-nodes-grid" class="space-y-2 max-h-[460px] overflow-y-auto pr-0.5">
+                        <!-- JS render 4 khu mỏ riêng biệt: Mỏ Gỗ, Mỏ Đá, Mỏ Sắt, Mỏ Vàng -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 1B: CHĂN NUÔI TRANG TRẠI GÀ (CHICKEN COOP) -->
+            <section id="view-chickens" class="game-view hidden flex flex-col gap-2.5">
+                <!-- Header Trại Gà (5 Cấp Độ) -->
+                <div class="bg-gradient-to-r from-amber-900 via-amber-800 to-amber-900 text-white p-2.5 rounded-2xl border-2 border-amber-500/70 flex justify-between items-center text-xs shadow-md">
+                    <div class="font-black text-amber-200 flex items-center gap-1.5 flex-wrap">
+                        <span>🐔 Trại Gà 5 Cấp</span>
+                        <span id="coop-tier-badge" class="bg-amber-400 text-slate-950 text-[10px] px-2 py-0.5 rounded-full font-black">🛖 Cấp 1</span>
+                        <span id="chicken-count-badge" class="bg-emerald-500 text-white text-[10px] px-2 py-0.5 rounded-full font-black">0/10 Con Gà</span>
+                    </div>
+                    <button id="btn-upgrade-coop" class="px-2.5 py-1.5 bg-gradient-to-r from-amber-400 to-yellow-300 text-slate-950 rounded-xl font-black text-[10px] shadow border-b-2 border-amber-700 active:scale-95 flex items-center gap-1 transition" onclick="game.openCoopUpgradeModal()">
+                        <span id="coop-upgrade-btn-text">⬆️ Nâng Cấp</span>
+                    </button>
+                </div>
+
+                <!-- Lộ Trình 5 Cấp Trại Gà (+10 Con Gà Mỗi Cấp) -->
+                <div class="bg-[#f5e6cc] p-2 rounded-2xl border border-[#b3743b] shadow-xs text-xs">
+                    <div class="flex items-center justify-between font-black text-[#4a260a] text-[10.5px] mb-1.5">
+                        <span>🏷️ Lộ Trình 5 Cấp Trại Gà (+10 Con Mỗi Cấp)</span>
+                        <span class="text-[9px] text-amber-900 font-extrabold">Giá mua gà: <b class="text-emerald-800">100💰 Vàng</b></span>
+                    </div>
+                    <div id="coop-tiers-roadmap" class="grid grid-cols-5 gap-1 text-center"></div>
+                </div>
+
+                <!-- Canvas Sân Vườn Chuồng Gà Hoạt Họa 4D -->
+                <div class="relative w-full h-[220px] bg-emerald-600 rounded-2xl overflow-hidden border-2 border-amber-700 shadow-lg">
+                    <canvas id="chicken-canvas" class="w-full h-full block cursor-pointer"></canvas>
+
+                    <div class="absolute top-1.5 left-2 pointer-events-none bg-black/60 backdrop-blur-xs text-white px-2.5 py-1 rounded-full text-[9.5px] font-bold flex items-center gap-1">
+                        <span>🌾 Kho Lúa: <b id="coop-rice-count" class="text-yellow-300">0</b> (Cho ăn 2🌾/con)</span>
+                    </div>
+
+                    <div id="coop-eggs-badge" class="absolute top-1.5 right-2 pointer-events-none bg-amber-400 text-slate-950 px-2.5 py-1 rounded-full text-[10px] font-black shadow flex items-center gap-1">
+                        <span>🥚 0 Trứng</span>
+                    </div>
+
+                    <div class="absolute bottom-1.5 left-2 right-2 flex justify-between items-center pointer-events-none text-[9px] text-white bg-black/60 px-2.5 py-1 rounded-lg backdrop-blur-xs">
+                        <span>👆 Chạm vào Gà có dấu <b class="text-yellow-300">(!)</b> • Cho ăn 2🌾 Lúa để nhận Trứng</span>
+                        <span class="text-amber-200 font-extrabold">⏳ Gà tự sống & ấp 24h</span>
+                    </div>
+                </div>
+
+                <!-- Thanh Nút Thao Tác Nhanh (Thu Hoạch Trứng & Bán Trứng Chợ P2P) -->
+                <div class="grid grid-cols-2 gap-2 text-xs">
+                    <button id="btn-collect-eggs" class="py-2.5 px-2 bg-gradient-to-b from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-black rounded-xl shadow border-b-2 border-teal-800 active:scale-95 flex flex-col items-center leading-tight transition" onclick="game.collectAllEggs()">
+                        <span class="text-[12px]">🧺 Thu Hoạch Trứng</span>
+                        <span class="text-[9.5px] text-emerald-100" id="collect-count-label">0 quả sẵn sàng</span>
+                    </button>
+                    <button id="btn-market-eggs" class="py-2.5 px-2 bg-gradient-to-b from-amber-400 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-slate-950 font-black rounded-xl shadow border-b-2 border-amber-700 active:scale-95 flex flex-col items-center leading-tight transition" onclick="game.openEggP2PMarket()">
+                        <span class="text-[12px]">🏪 Bán Trứng Chợ P2P</span>
+                        <span class="text-[9.5px] text-amber-950 font-extrabold" id="coop-p2p-market-label">Đăng bán lấy VND</span>
+                    </button>
+                </div>
+
+                <!-- Cửa Hàng Mua Gà (100 Vàng / con) -->
+                <div class="game-wood-panel rounded-2xl p-2.5">
+                    <div class="flex items-center justify-between text-xs font-black text-amber-950 mb-1.5">
+                        <span>🐣 Mua Gà Đẻ Trứng (100💰 Vàng / con)</span>
+                        <span id="coop-capacity-badge" class="text-[10px] text-amber-900 font-extrabold">Sức chứa: 0/10 con</span>
+                    </div>
+                    <div class="bg-amber-50 border border-amber-200 rounded-xl p-2 flex justify-between items-center gap-2">
+                        <div class="flex items-center gap-2">
+                            <span class="text-3xl leading-none">🐔</span>
+                            <div>
+                                <div class="font-black text-slate-900 text-xs leading-tight">Gà Mái Đẻ Trứng (24h)</div>
+                                <div class="text-[9.5px] text-amber-900">Tự sống & ấp 24h • Cho ăn 2🌾 Lúa lúc thu hoạch trứng (Bán VND trên Chợ P2P)</div>
+                            </div>
+                        </div>
+                        <div class="flex gap-1 flex-shrink-0">
+                            <button id="btn-buy-chicken-1" class="px-2.5 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl text-[10px] shadow border border-amber-700 active:scale-95" onclick="game.buyChicken(1)">
+                                Mua 1 (100💰)
+                            </button>
+                            <button id="btn-buy-chicken-max" class="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-xl text-[10px] shadow border border-emerald-800 active:scale-95" onclick="game.buyChickenMax()">
+                                Mua Đầy
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Hidden element để tương thích ngược nếu có hàm cũ gọi -->
+                    <div id="chicken-shop-list" class="hidden"></div>
+                </div>
+
+                <!-- Các nút/nhãn ẩn phụ trợ đảm bảo tương thích 100% -->
+                <div class="hidden">
+                    <button id="btn-feed-chickens"></button>
+                    <span id="feed-cost-label"></span>
+                    <button id="btn-sell-eggs-vnd"></button>
+                    <span id="coop-vnd-sell-label"></span>
+                    <span id="coop-food-label">100%</span>
+                    <span id="chicken-boost-label">Bình thường</span>
+                    <span id="coop-owned-summary"></span>
+                    <div id="owned-chickens-list"></div>
+                    <button id="btn-chicken-boost"></button>
+                    <button id="btn-phoenix-ad"></button>
+                </div>
+            </section>
+
+            <!-- VIEW 2: HỒ CÂU CÁ (PHONG CÁCH SUNFLOWER LAND) -->
+            <section id="view-fishing" class="game-view hidden flex flex-col gap-2.5">
+                <!-- Banner Tiêu Đề Hồ Câu & Thống Kê Trong Ngày -->
+                <div class="bg-gradient-to-r from-teal-900 via-emerald-900 to-sky-950 text-white p-3 rounded-2xl border-2 border-emerald-500/60 shadow-xl flex justify-between items-center text-xs">
+                    <div class="flex flex-col gap-1 w-full">
+                        <div class="flex items-center gap-2">
+                            <span class="text-base font-black text-amber-300 drop-shadow">🎣 HỒ CÂU ANH EM</span>
+                        </div>
+                        <div class="text-[10.5px] sm:text-[11px] text-emerald-200 flex flex-wrap items-center gap-x-2.5 gap-y-1">
+                            <span>Lượt câu hôm nay: <b id="daily-fish-count" class="text-yellow-300 font-black">0</b><span class="text-white/70">/20 lượt</span></span>
+                            <span>•</span>
+                            <span>Cần trong túi: <b id="owned-rods-count" class="text-amber-300 font-black">0</b> chiếc</span>
+                            <span>•</span>
+                            <span>Mồi câu: <span class="text-emerald-300 font-bold">Thường: <b id="owned-bait-normal" class="text-white font-black">0</b></span> | <span class="text-sky-300 font-bold">TB: <b id="owned-bait-medium" class="text-white font-black">0</b></span> | <span class="text-amber-300 font-bold">Cao cấp: <b id="owned-bait-high" class="text-white font-black">0</b></span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Khung Hồ Nước Animated Canvas (Cầu Gỗ, Nông Dân, Mặt Nước Lấp Lánh) -->
+                <div class="relative w-full h-[220px] bg-sky-950 rounded-2xl overflow-hidden border-2 border-emerald-600 shadow-2xl">
+                    <canvas id="fishing-canvas" class="w-full h-full block cursor-pointer"></canvas>
+
+                    <!-- Live Catch Ticker Trên Mặt Nước -->
+                    <div class="absolute top-2 left-2 right-2 pointer-events-none flex flex-col items-center gap-1">
+                        <div id="live-catch-ticker" class="bg-black/65 backdrop-blur-sm text-white px-3 py-1 rounded-full text-[10.5px] font-bold border border-emerald-400/40 shadow-lg max-w-[95%] truncate transition-all">
+                            🎣 Chào mừng bạn đến Cầu Câu! Chế tạo cần và chọn mồi câu bên dưới!
+                        </div>
+                    </div>
+
+                    <!-- Nút Câu Cá Góc Màn Hình (Luôn Hiện & Cho Phép Chọn Mồi) -->
+                    <div id="fishing-action-corner" class="absolute bottom-2.5 right-2.5 z-10 flex flex-col items-end gap-1.5">
+                        <div id="fishing-bait-selector-corner" class="flex items-center gap-1 bg-black/75 backdrop-blur-md p-1 rounded-xl border border-white/20 text-[9px] font-bold">
+                            <!-- JS render các nút chọn mồi -->
+                        </div>
+                        <button type="button" id="btn-cast-fishing-action" onclick="game.executeQuickFishing()" class="px-4 py-2 bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-400 hover:brightness-110 active:scale-95 text-slate-950 font-black text-xs sm:text-sm rounded-2xl shadow-2xl border-2 border-yellow-200 ring-4 ring-amber-500/50 flex items-center gap-1.5 cursor-pointer">
+                            <span class="text-base">🎣</span>
+                            <span>Câu Cá</span>
+                            <span id="quick-fishing-bait-badge" class="ml-0.5 px-1.5 py-0.5 bg-slate-950 text-yellow-300 text-[9.5px] rounded-lg font-black">Thường (0)</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Card 1: Chế Tạo Cần Câu (3 Gỗ + 1 Đá + 20 Vàng) -->
+                <div class="game-wood-panel p-3 rounded-2xl border-2 border-amber-600/40 shadow-md flex flex-col gap-2">
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-lg">🔨</span>
+                            <span class="font-black text-amber-950 text-xs uppercase tracking-wide">Xưởng Chế Tạo Cần Câu</span>
+                        </div>
+                    </div>
+
+                    <!-- Hiển thị tài nguyên hiện có -->
+                    <div class="grid grid-cols-3 gap-2 bg-amber-50/80 p-2 rounded-xl border border-amber-200/70 text-center text-[10.5px]">
+                        <div class="flex flex-col items-center">
+                            <span class="font-bold text-slate-700">🌳 Gỗ (Wood)</span>
+                            <span id="craft-wood-have" class="text-sm font-black text-emerald-800">0 / 3</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <span class="font-bold text-slate-700">⛰️ Đá (Stone)</span>
+                            <span id="craft-stone-have" class="text-sm font-black text-sky-800">0 / 1</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <span class="font-bold text-slate-700">💰 Vàng</span>
+                            <span id="craft-gold-have" class="text-sm font-black text-amber-700">0 / 20</span>
+                        </div>
+                    </div>
+
+                    <!-- Nút chế tạo -->
+                    <div class="flex gap-2">
+                        <button type="button" id="btn-craft-rod-1" onclick="game.craftFishingRod(1)" class="flex-1 py-2 bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950 font-black text-xs rounded-xl shadow border-b-2 border-amber-700 active:scale-95">
+                            🔨 Chế Tạo 1 Cần
+                        </button>
+                        <button type="button" id="btn-craft-rod-max" onclick="game.craftFishingRodMax()" class="flex-1 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-black text-xs rounded-xl shadow border-b-2 border-teal-800 active:scale-95">
+                            ⚡ Chế Tạo Tối Đa (Max)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Card 2: 3 Cấp Độ Mồi Câu Nông Sản (Random 1 Loại/Ngày) -->
+                <div class="game-wood-panel p-3 rounded-2xl border-2 border-emerald-600/40 shadow-md flex flex-col gap-2">
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-lg">🎣</span>
+                            <span class="font-black text-amber-950 text-xs uppercase tracking-wide">3 Cấp Độ Mồi Câu Nông Sản</span>
+                        </div>
+                        <span class="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full border border-emerald-300">Mỗi ngày đổi 1 loại</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
+                        <!-- Tier 1: Mồi Câu Thường -->
+                        <div class="bg-gradient-to-b from-white to-emerald-50/70 p-2.5 rounded-2xl border-2 border-emerald-400 shadow-sm flex flex-col justify-between gap-2">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <div class="text-[11px] font-black text-emerald-900 flex items-center gap-1">🐟 MỒI CÂU THƯỜNG</div>
+                                    <div class="text-[9.5px] text-slate-600">Câu được: <b class="text-emerald-700">Cá Rô Đồng</b></div>
+                                </div>
+                                <span class="bg-emerald-200 text-emerald-950 font-black text-[9px] px-1.5 py-0.5 rounded">100% Trúng</span>
+                            </div>
+                            <div class="bg-emerald-100/70 p-1.5 rounded-xl text-[10px] text-emerald-950 flex items-center justify-between">
+                                <span>Mồi hôm nay:</span>
+                                <b id="bait-crop-normal-label" class="text-emerald-800">5x Nông Sản</b>
+                            </div>
+                            <div class="text-[9.5px] text-slate-600 flex justify-between items-center">
+                                <span>Kho của bạn:</span>
+                                <b id="bait-crop-normal-have" class="text-emerald-700">0 / 5</b>
+                            </div>
+                            <div class="text-[9.5px] text-slate-600 flex justify-between items-center">
+                                <span>Mồi trong túi:</span>
+                                <b id="bait-owned-normal" class="text-emerald-800 font-black">0 mồi</b>
+                            </div>
+                            <button type="button" id="btn-cast-tier-normal" onclick="game.buyFishingBait('normal')" class="w-full py-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-black text-xs rounded-xl shadow border-b-2 border-teal-800 active:scale-95 flex items-center justify-center gap-1">
+                                <span>Mua</span>
+                            </button>
+                        </div>
+
+                        <!-- Tier 2: Mồi Câu Trung Bình -->
+                        <div class="bg-gradient-to-b from-white to-sky-50/70 p-2.5 rounded-2xl border-2 border-sky-400 shadow-sm flex flex-col justify-between gap-2">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <div class="text-[11px] font-black text-sky-900 flex items-center gap-1">🐠 MỒI CÂU TRUNG BÌNH</div>
+                                    <div class="text-[9.5px] text-slate-600">Câu được: <b class="text-sky-700">Cá Chép Vàng</b></div>
+                                </div>
+                                <span class="bg-sky-200 text-sky-950 font-black text-[9px] px-1.5 py-0.5 rounded">100% Trúng</span>
+                            </div>
+                            <div class="bg-sky-100/70 p-1.5 rounded-xl text-[10px] text-sky-950 flex items-center justify-between">
+                                <span>Mồi hôm nay:</span>
+                                <b id="bait-crop-medium-label" class="text-sky-800">5x Nông Sản</b>
+                            </div>
+                            <div class="text-[9.5px] text-slate-600 flex justify-between items-center">
+                                <span>Kho của bạn:</span>
+                                <b id="bait-crop-medium-have" class="text-sky-700">0 / 5</b>
+                            </div>
+                            <div class="text-[9.5px] text-slate-600 flex justify-between items-center">
+                                <span>Mồi trong túi:</span>
+                                <b id="bait-owned-medium" class="text-sky-800 font-black">0 mồi</b>
+                            </div>
+                            <button type="button" id="btn-cast-tier-medium" onclick="game.buyFishingBait('medium')" class="w-full py-2 bg-gradient-to-r from-sky-600 to-blue-600 text-white font-black text-xs rounded-xl shadow border-b-2 border-blue-800 active:scale-95 flex items-center justify-center gap-1">
+                                <span>Mua</span>
+                            </button>
+                        </div>
+
+                        <!-- Tier 3: Mồi Câu Cao Cấp -->
+                        <div class="bg-gradient-to-b from-white to-amber-50/70 p-2.5 rounded-2xl border-2 border-amber-400 shadow-sm flex flex-col justify-between gap-2">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <div class="text-[11px] font-black text-amber-900 flex items-center gap-1">👑 MỒI CÂU CAO CẤP</div>
+                                    <div class="text-[9.5px] text-slate-600">Câu được: <b class="text-amber-700">Cá Hồi</b></div>
+                                </div>
+                                <span class="bg-amber-300 text-amber-950 font-black text-[9px] px-1.5 py-0.5 rounded">100% Trúng</span>
+                            </div>
+                            <div class="bg-amber-100/70 p-1.5 rounded-xl text-[10px] text-amber-950 flex items-center justify-between">
+                                <span>Mồi hôm nay:</span>
+                                <b id="bait-crop-high-label" class="text-amber-800">5x Nông Sản</b>
+                            </div>
+                            <div class="text-[9.5px] text-slate-600 flex justify-between items-center">
+                                <span>Kho của bạn:</span>
+                                <b id="bait-crop-high-have" class="text-amber-700">0 / 5</b>
+                            </div>
+                            <div class="text-[9.5px] text-slate-600 flex justify-between items-center">
+                                <span>Mồi trong túi:</span>
+                                <b id="bait-owned-high" class="text-amber-800 font-black">0 mồi</b>
+                            </div>
+                            <button type="button" id="btn-cast-tier-high" onclick="game.buyFishingBait('high')" class="w-full py-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-black text-xs rounded-xl shadow border-b-2 border-orange-700 active:scale-95 flex items-center justify-center gap-1">
+                                <span>Mua</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KHU VỰC ẨN BẢO TOÀN TƯƠNG THÍCH DOM CHO VERIFY TEST VÀ BACKWARD COMPATIBILITY -->
+                <div class="hidden" style="display:none !important;" aria-hidden="true">
+                    <span id="total-fish-basket-count">0 con</span>
+                    <div id="fish-basket-list"></div>
+                    <div id="fish-cooking-list"></div>
+                    <span id="rod-name">Cần Sunflower Land</span>
+                    <span id="vip-pass-badge"></span>
+                    <span id="catch-rate-label">100%</span>
+                    <span id="session-time-label"></span>
+                    <span id="session-entry-time">--:--</span>
+                    <button id="btn-buy-ticket"></button>
+                    <button id="btn-fish-report"></button>
+                    <div id="fishing-status-overlay"></div>
+                    <div id="minigame-container">
+                        <div id="catch-safe-zone"></div>
+                        <div id="catch-fish-indicator"></div>
+                        <div id="catch-progress-bar"></div>
+                    </div>
+                    <button id="btn-cast-fishing"></button>
+                    <span id="cast-cost-badge"></span>
+                    <button id="btn-reel-in"></button>
+                    <button id="btn-buff-rod"></button>
+                    <span id="vip-rod-btn-sub"></span>
+                </div>
+            </section>
+
+            <!-- VIEW 3: CHỢ GIAO THƯƠNG P2P (NGƯỜI CHƠI MUA BÁN VỚI NHAU - SÀN THU PHÍ 20% / VIP 12,5%) -->
+            <section id="view-market" class="game-view hidden flex flex-col gap-2.5">
+                <div class="game-wood-panel p-3 rounded-2xl flex justify-between items-center gap-2">
+                    <div>
+                        <div class="text-[11px] font-bold text-amber-800">🤝 Chợ Giao Thương P2P</div>
+                        <div id="market-fee-banner" class="text-[10px] font-bold text-amber-900">Phí bán hàng Chợ P2P: <b>20%</b> (<button type="button" id="btn-market-open-vip" class="underline text-rose-700 font-black" onclick="game.openVipCenterModal('buy')">MUA VIP</button>)</div>
+                    </div>
+                    <button id="btn-refresh-market" class="px-3 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-black text-xs rounded-xl shadow-md border-b-2 border-teal-900 active:scale-95 flex-shrink-0">
+                        🔄 Làm Mới
+                    </button>
+                </div>
+
+                <!-- SẠP HÀNG P2P ĐANG BÁN TỪ NGƯỜI CHƠI -->
+                <div class="bg-[#e3be84] rounded-2xl p-2.5 border-2 border-[#784319] shadow-sm space-y-2">
+                    <div class="flex justify-between items-center gap-2">
+                        <span class="text-xs font-black text-[#4a260a]">🛒 Sạp Chợ Người Chơi</span>
+                        <div class="flex gap-1 text-[10px] font-black">
+                            <button class="market-filter-btn px-2 py-1 rounded-lg bg-[#5c3010] text-amber-100 border border-[#3b1c06]" data-filter="all">Tất cả (<span id="market-total-count">0</span>)</button>
+                            <button class="market-filter-btn px-2 py-1 rounded-lg bg-[#f7e7c8] text-[#4a260a] border border-[#784319]" data-filter="mine">Của tôi (<span id="market-mine-count">0</span>)</button>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-4 gap-1 text-[9px] sm:text-[10px] font-black">
+                        <button type="button" class="market-cat-btn py-1 px-1 rounded-lg bg-[#5c3010] text-amber-100 border border-[#3b1c06] truncate text-center" data-market-cat="all">📦 Tất Cả</button>
+                        <button type="button" class="market-cat-btn py-1 px-1 rounded-lg bg-[#f7e7c8] text-[#4a260a] border border-[#784319] truncate text-center" data-market-cat="crops">🌾 Nông Sản (<span id="market-crops-count">0</span>)</button>
+                        <button type="button" class="market-cat-btn py-1 px-1 rounded-lg bg-[#f7e7c8] text-[#4a260a] border border-[#784319] truncate text-center" data-market-cat="eggs">🥚 Trứng (<span id="market-eggs-count">0</span>)</button>
+                        <button type="button" class="market-cat-btn py-1 px-1 rounded-lg bg-[#f7e7c8] text-[#4a260a] border border-[#784319] truncate text-center" data-market-cat="resources">⛏️ Tài Nguyên (<span id="market-resources-count">0</span>)</button>
+                    </div>
+                    <div id="p2p-market-listings" class="space-y-2.5 max-h-[360px] overflow-y-auto pr-0.5">
+                        <!-- JS render tách riêng khu Nông Sản & khu Tài Nguyên dạng lưới 3 cột -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 4: BẾP NẤU BÁNH (THAY THẾ VÒNG QUAY - LÊN CẤP CHỈ DỰA VÀO NẤU ĂN) -->
+            <section id="view-spin" class="game-view hidden flex flex-col gap-2.5">
+                <!-- Bảng Trạng Thái Lò Nướng Đang Hoạt Động (Active Ovens Dashboard) -->
+                <div id="bakery-ovens-summary" class="bg-[#fdf6e2] rounded-2xl border-2 border-[#8c5426] p-2.5 shadow-sm text-xs text-[#4a260a]">
+                    <!-- Được sinh tự động từ game.renderBakeryUI() -->
+                </div>
+
+                <!-- Danh Sách Công Thức Bánh (Hiển thị dạng lưới 3 cột trực quan bao quát) -->
+                <div id="bakery-recipes-list" class="grid grid-cols-3 gap-1.5 pb-2">
+                    <!-- Được sinh tự động từ BAKERY_RECIPES trong game.js -->
+                </div>
+            </section>
+
+            <!-- VIEW 4B: RƯƠNG ĐỒ TỔNG HỢP (CÂY TRỒNG, TÀI NGUYÊN, CÁ & TRỨNG) -->
+            <section id="view-warehouse" class="game-view hidden flex flex-col gap-2.5">
+                <div class="bg-[#c98f52] rounded-2xl p-2.5 shadow-md border-4 border-[#5c3010] text-xs text-[#4a260a] flex flex-col gap-2">
+                    <div class="flex items-center justify-between gap-2 pb-1.5 border-b-2 border-[#784319]">
+                        <div class="flex items-center gap-1.5 min-w-0">
+                            <span class="text-lg">🎒</span>
+                            <h3 class="font-black text-sm text-[#3b1c06] truncate">Rương Đồ</h3>
+                        </div>
+                        <span id="warehouse-total-badge" class="bg-emerald-700 text-white text-[10px] font-black px-2 py-0.5 rounded-full flex-shrink-0">0 món</span>
+                    </div>
+
+                    <!-- Thanh phân mục sản phẩm -->
+                    <div class="grid grid-cols-6 gap-1">
+                        <button type="button" class="warehouse-tab-btn py-1 px-0.5 rounded-lg font-black text-[9px] border border-[#5c3010] bg-[#5c3010] text-amber-100 shadow-xs active:scale-95 truncate text-center" data-warehouse-cat="all">📦 Tất Cả</button>
+                        <button type="button" class="warehouse-tab-btn py-1 px-0.5 rounded-lg font-black text-[9px] border border-[#5c3010] bg-[#f7e7c8] text-[#4a260a] shadow-xs active:scale-95 truncate text-center" data-warehouse-cat="crops">🌾 Cây Trồng</button>
+                        <button type="button" class="warehouse-tab-btn py-1 px-0.5 rounded-lg font-black text-[9px] border border-[#5c3010] bg-[#f7e7c8] text-[#4a260a] shadow-xs active:scale-95 truncate text-center" data-warehouse-cat="resources">⛏️ Tài Nguyên</button>
+                        <button type="button" class="warehouse-tab-btn py-1 px-0.5 rounded-lg font-black text-[9px] border border-[#5c3010] bg-[#f7e7c8] text-[#4a260a] shadow-xs active:scale-95 truncate text-center" data-warehouse-cat="eggs">🥚 Trứng</button>
+                        <button type="button" class="warehouse-tab-btn py-1 px-0.5 rounded-lg font-black text-[9px] border border-[#5c3010] bg-[#f7e7c8] text-[#4a260a] shadow-xs active:scale-95 truncate text-center" data-warehouse-cat="fish">🐟 Cá</button>
+                        <button type="button" class="warehouse-tab-btn py-1 px-0.5 rounded-lg font-black text-[9px] border border-[#5c3010] bg-[#f7e7c8] text-[#4a260a] shadow-xs active:scale-95 truncate text-center" data-warehouse-cat="cakes">🍰 Bánh</button>
+                    </div>
+
+                    <!-- Nội dung các mục sản phẩm -->
+                    <div id="warehouse-sections" class="space-y-2.5 bg-[#efd3a3] border-2 border-[#784319] rounded-xl p-2 max-h-[60vh] overflow-y-auto">
+                        <!-- JS render chia theo từng mục -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 5: TRUNG TÂM ĐỔI QUÀ & NẠP RÚT (REWARDS) -->
+            <section id="view-rewards" class="game-view hidden flex flex-col gap-2.5">
+                <!-- Đổi VND sang Kim Cương (100 VND = 10 Kim Cương) -->
+                <div class="bg-gradient-to-r from-cyan-100 via-sky-50 to-blue-50 rounded-2xl p-2.5 border-2 border-cyan-400 shadow-sm flex flex-col gap-2 text-xs">
+                    <div class="flex justify-between items-center gap-2">
+                        <div>
+                            <div class="font-black text-cyan-950 flex items-center gap-1">
+                                <span>💎 Đổi 💵 VND sang 💎 Kim Cương</span>
+                            </div>
+                            <div class="text-[10px] text-cyan-800">Tỉ lệ: <b>100 VND = 10 Kim Cương</b> • Nhập số VND tùy chọn</div>
+                        </div>
+                        <span id="vnd-to-diamond-preview" class="px-2 py-0.5 rounded-lg bg-cyan-200/80 border border-cyan-500 font-black text-[10.5px] text-cyan-950 flex-shrink-0">= 10 💎</span>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <input type="number" id="vnd-to-diamond-input" min="10" step="10" value="100" placeholder="Nhập số VND muốn đổi..." class="flex-1 min-w-0 px-2.5 py-1.5 rounded-xl border-2 border-cyan-400 bg-white font-black text-xs text-cyan-950 focus:outline-none focus:border-cyan-600">
+                        <button type="button" id="btn-vnd-to-diamond" class="px-3 py-1.5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:brightness-110 text-white font-black rounded-xl border-b-2 border-cyan-800 active:scale-95 text-[11px] flex-shrink-0 shadow cursor-pointer">
+                            Đổi Kim Cương
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Quầy Đổi Tiền & Nạp Nhanh (Chuyển từ Chợ Bán sang Rút Quà) -->
+                <div class="bg-gradient-to-r from-amber-100 to-yellow-50 rounded-2xl p-2.5 border-2 border-amber-400 shadow-sm flex flex-col gap-2 text-xs">
+                    <div class="flex justify-between items-center gap-2">
+                        <div>
+                            <div class="font-black text-amber-950">🏦 Đổi 💵 VND sang <span class="gold-bar-icon"></span> Vàng</div>
+                            <div class="text-[10px] text-amber-800">Tỉ lệ: <b>100 VND = 10 Vàng</b> • Nhập số VND tùy chọn</div>
+                        </div>
+                        <span id="vnd-to-gold-preview" class="px-2 py-0.5 rounded-lg bg-amber-200/80 border border-amber-500 font-black text-[10.5px] text-amber-950 flex-shrink-0">= 10 Vàng</span>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <input type="number" id="vnd-to-gold-input" min="10" step="10" value="100" placeholder="Nhập số VND muốn đổi..." class="flex-1 min-w-0 px-2.5 py-1.5 rounded-xl border-2 border-amber-400 bg-white font-black text-xs text-amber-950 focus:outline-none focus:border-amber-600">
+                        <button id="btn-vnd-to-gold" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl border-b-2 border-amber-700 active:scale-95 text-[11px] flex-shrink-0">
+                            Đổi Vàng
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-r from-fuchsia-50 via-pink-50 to-sky-50 rounded-2xl p-2.5 border-2 border-pink-300 shadow-sm flex justify-between items-center text-xs">
+                    <div>
+                        <div class="font-black text-pink-900">💳 Nạp VND Chợ</div>
+                        <div class="text-[10px] text-slate-600">Dưới 100k: <b>1:1</b> • Trên 100k: <b>1:1,1</b> • <b>MoMo / ZaloPay / Ngân Hàng</b></div>
+                    </div>
+                    <button id="btn-market-topup" class="px-3 py-1.5 bg-gradient-to-r from-pink-600 to-sky-600 text-white font-black rounded-xl border-b-2 border-pink-900 active:scale-95 text-[11px] shadow flex-shrink-0">
+                        Nạp Ngay
+                    </button>
+                </div>
+
+                <!-- Phương Thức Rút Tiền VND Tỉ Lệ 1:1 (MoMo, ZaloPay, Ngân Hàng) -->
+                <div class="bg-white/95 rounded-2xl p-3 border-2 border-slate-200 flex flex-col gap-2.5 shadow-sm">
+                    <div class="flex justify-between items-center">
+                        <div class="text-xs font-black text-slate-800">Chọn Hình Thức Nhận Tiền:</div>
+                        <div class="text-[10px] font-black text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-lg border border-emerald-300">
+                            💵 Rút VND Tỉ Lệ 1:1
+                        </div>
+                    </div>
+
+                    <!-- 3 Tabs: Ngân Hàng, MoMo, ZaloPay -->
+                    <div class="grid grid-cols-3 gap-2 text-center text-xs font-extrabold">
+                        <button type="button" class="withdraw-tab active p-2 rounded-xl border-2 border-emerald-500 bg-emerald-50 text-emerald-800 transition shadow-sm cursor-pointer" data-method="bank">
+                            <div class="text-base">🏦</div>
+                            Ngân Hàng
+                        </button>
+                        <button type="button" class="withdraw-tab p-2 rounded-xl border-2 border-slate-200 bg-white text-slate-600 transition shadow-sm cursor-pointer" data-method="momo">
+                            <div class="text-base">👛</div>
+                            MoMo
+                        </button>
+                        <button type="button" class="withdraw-tab p-2 rounded-xl border-2 border-slate-200 bg-white text-slate-600 transition shadow-sm cursor-pointer" data-method="zalopay">
+                            <div class="text-base">💳</div>
+                            ZaloPay
+                        </button>
+                    </div>
+
+                    <!-- Mục Nhập Thông Tin Cho Ngân Hàng (2 Mục: Chọn Ngân Hàng + STK & Tên) -->
+                    <div id="withdraw-fields-bank" class="space-y-2">
+                        <div class="flex flex-col gap-1">
+                            <label class="text-[11px] font-bold text-slate-700 flex items-center justify-between">
+                                <span>🏦 1. Ngân Hàng Thụ Hưởng:</span>
+                                <span class="text-[9.5px] text-emerald-700 font-bold">24+ ngân hàng</span>
+                            </label>
+                            <select id="withdraw-bank-select" class="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:border-emerald-600 font-bold bg-white text-slate-800 shadow-xs cursor-pointer">
+                                <option value="Vietcombank">Vietcombank (VCB - Ngoại Thương)</option>
+                                <option value="MBBank">MB Bank (Quân Đội)</option>
+                                <option value="Techcombank">Techcombank (Kỹ Thương)</option>
+                                <option value="BIDV">BIDV (Đầu Tư &amp; Phát Triển)</option>
+                                <option value="VietinBank">VietinBank (Công Thương)</option>
+                                <option value="ACB">ACB (Á Châu)</option>
+                                <option value="VPBank">VPBank (Việt Nam Thịnh Vượng)</option>
+                                <option value="TPBank">TPBank (Tiên Phong)</option>
+                                <option value="Sacombank">Sacombank (Sài Gòn Thương Tín)</option>
+                                <option value="VIB">VIB (Quốc Tế)</option>
+                                <option value="Agribank">Agribank (Nông Nghiệp)</option>
+                                <option value="OCB">OCB (Phương Đông)</option>
+                                <option value="SHB">SHB (Sài Gòn - Hà Nội)</option>
+                                <option value="SeABank">SeABank (Đông Nam Á)</option>
+                                <option value="MSB">MSB (Hàng Hải)</option>
+                                <option value="HDBank">HDBank (Phát Triển TP.HCM)</option>
+                                <option value="LPBank">LPBank (Lộc Phát)</option>
+                                <option value="NamABank">Nam A Bank (Nam Á)</option>
+                                <option value="ShinhanBank">Shinhan Bank</option>
+                                <option value="KienlongBank">KienlongBank</option>
+                                <option value="PVcomBank">PVcomBank</option>
+                                <option value="BVBank">BVBank (Bản Việt)</option>
+                                <option value="Other">Ngân Hàng Khác</option>
+                            </select>
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <label class="text-[11px] font-bold text-slate-700" id="withdraw-account-label">
+                                💳 2. Số Tài Khoản Ngân Hàng (STK):
+                            </label>
+                            <input type="text" id="withdraw-account-input" placeholder="Nhập số tài khoản ngân hàng..." class="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:border-emerald-600 font-bold">
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <label class="text-[11px] font-bold text-slate-700">
+                                👤 3. Tên Chủ Tài Khoản:
+                            </label>
+                            <input type="text" id="withdraw-account-name" placeholder="VD: NGUYEN VAN A (Viết hoa không dấu)..." class="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:border-emerald-600 font-bold uppercase">
+                        </div>
+                    </div>
+
+                    <!-- Mục Nhập Thông Tin Cho Ví Điện Tử (MoMo / ZaloPay) -->
+                    <div id="withdraw-fields-wallet" class="hidden space-y-2">
+                        <div class="flex flex-col gap-1">
+                            <label class="text-[11px] font-bold text-slate-700" id="withdraw-wallet-phone-label">
+                                📱 1. Số Điện Thoại Ví:
+                            </label>
+                            <input type="tel" id="withdraw-wallet-phone" placeholder="Nhập SĐT đăng ký ví..." class="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:border-emerald-600 font-bold">
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <label class="text-[11px] font-bold text-slate-700" id="withdraw-wallet-name-label">
+                                👤 2. Tên Chủ Ví:
+                            </label>
+                            <input type="text" id="withdraw-wallet-name" placeholder="VD: NGUYEN VAN A..." class="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:border-emerald-600 font-bold uppercase">
+                        </div>
+                    </div>
+
+                    <!-- Số dư VND & Mốc Rút VND Tỉ Lệ 1:1 -->
+                    <div class="space-y-1.5 pt-1 border-t border-slate-200">
+                        <div class="flex justify-between items-center text-[11px] font-bold">
+                            <span class="text-slate-700">Số Dư VND Hiện Có:</span>
+                            <span class="text-emerald-700 font-black"><span id="withdraw-current-vnd">0</span>đ VND</span>
+                        </div>
+
+                        <!-- 3 Mốc Rút VND Chuẩn Tỉ Lệ 1:1 -->
+                        <div class="grid grid-cols-3 gap-1.5 text-xs font-black">
+                            <button type="button" class="withdraw-amount-btn bg-emerald-100 border-emerald-500 py-2.5 border-2 rounded-xl text-slate-800 transition cursor-pointer text-center" data-vnd="20000" data-diamonds="20000">
+                                <span class="text-emerald-800 text-sm">20,000đ</span>
+                            </button>
+                            <button type="button" class="withdraw-amount-btn py-2.5 border-2 rounded-xl bg-slate-50 hover:bg-emerald-50 border-slate-300 text-slate-800 transition cursor-pointer text-center" data-vnd="50000" data-diamonds="50000">
+                                <span class="text-emerald-800 text-sm">50,000đ</span>
+                            </button>
+                            <button type="button" class="withdraw-amount-btn py-2.5 border-2 rounded-xl bg-slate-50 hover:bg-emerald-50 border-slate-300 text-slate-800 transition cursor-pointer text-center" data-vnd="100000" data-diamonds="100000">
+                                <span class="text-emerald-800 text-sm">100,000đ</span>
+                            </button>
+                        </div>
+
+                        <!-- Ô nhập số tiền VND tùy chọn -->
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-[10.5px] font-bold text-slate-600 flex-shrink-0">Hoặc số khác:</span>
+                            <input type="number" id="withdraw-custom-vnd" min="5000" step="1000" placeholder="VD: 50000 (Tối thiểu 5.000đ)" class="flex-1 min-w-0 px-2.5 py-1.5 text-xs border border-slate-300 rounded-xl focus:outline-none focus:border-emerald-600 font-bold text-slate-900 bg-white">
+                            <span class="text-[11px] font-black text-slate-700 flex-shrink-0">VND</span>
+                        </div>
+                    </div>
+
+                    <button type="button" id="btn-request-withdraw" class="w-full py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-black text-sm rounded-xl shadow-md border-b-2 border-teal-900 active:scale-95 flex items-center justify-center gap-1.5 cursor-pointer">
+                        <span>RÚT (Min rút 5000 VND)</span>
+                    </button>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- FOOTER: Thanh Điều Hướng (Bottom Navigation Bar - Có tab Rương Đồ) -->
+        <nav class="absolute bottom-0 left-0 right-0 h-16 bg-white/95 backdrop-blur-md border-t border-slate-200 flex justify-around items-center px-0.5 z-30 shadow-lg">
+            <button class="nav-tab active flex flex-col items-center justify-center flex-1 min-w-0 h-full text-slate-500 font-bold transition active:scale-95" data-target="view-farm">
+                <span class="text-base leading-none">🌾</span>
+                <span class="text-[7.5px] sm:text-[8.5px] font-black tracking-tight mt-0.5 leading-none whitespace-nowrap">Vườn Cây</span>
+            </button>
+            <button class="nav-tab flex flex-col items-center justify-center flex-1 min-w-0 h-full text-slate-500 font-bold transition active:scale-95" data-target="view-resources">
+                <span class="text-base leading-none">⛏️</span>
+                <span class="text-[7.5px] sm:text-[8.5px] font-black tracking-tight mt-0.5 leading-none whitespace-nowrap">Tài Nguyên</span>
+            </button>
+            <button class="nav-tab flex flex-col items-center justify-center flex-1 min-w-0 h-full text-slate-500 font-bold transition active:scale-95" data-target="view-chickens">
+                <span class="text-base leading-none">🐔</span>
+                <span class="text-[7.5px] sm:text-[8.5px] font-black tracking-tight mt-0.5 leading-none whitespace-nowrap">Trại Gà</span>
+            </button>
+            <button class="nav-tab flex flex-col items-center justify-center flex-1 min-w-0 h-full text-slate-500 font-bold transition active:scale-95" data-target="view-fishing">
+                <span class="text-base leading-none">🎣</span>
+                <span class="text-[7.5px] sm:text-[8.5px] font-black tracking-tight mt-0.5 leading-none whitespace-nowrap">Câu Cá</span>
+            </button>
+            <button class="nav-tab flex flex-col items-center justify-center flex-1 min-w-0 h-full text-slate-500 font-bold transition active:scale-95" data-target="view-market">
+                <span class="text-base leading-none">🏪</span>
+                <span class="text-[7.5px] sm:text-[8.5px] font-black tracking-tight mt-0.5 leading-none whitespace-nowrap">Chợ</span>
+            </button>
+            <button class="nav-tab flex flex-col items-center justify-center flex-1 min-w-0 h-full text-slate-500 font-bold transition active:scale-95" data-target="view-spin">
+                <span class="text-base leading-none">🧁</span>
+                <span class="text-[7.5px] sm:text-[8.5px] font-black tracking-tight mt-0.5 leading-none whitespace-nowrap">Nấu Bánh</span>
+            </button>
+            <button class="nav-tab flex flex-col items-center justify-center flex-1 min-w-0 h-full text-slate-500 font-bold transition active:scale-95" data-target="view-rewards">
+                <span class="text-base leading-none">💎</span>
+                <span class="text-[7.5px] sm:text-[8.5px] font-black tracking-tight mt-0.5 leading-none text-cyan-600 whitespace-nowrap">Phần Thưởng</span>
+            </button>
+            <button class="nav-tab flex flex-col items-center justify-center flex-1 min-w-0 h-full text-slate-500 font-bold transition active:scale-95" data-target="view-warehouse">
+                <span class="text-base leading-none">🎒</span>
+                <span class="text-[7.5px] sm:text-[8.5px] font-black tracking-tight mt-0.5 leading-none text-amber-800 whitespace-nowrap">Rương Đồ</span>
+            </button>
+        </nav>
+
+        <!-- MODAL 1: Bắt Được Cá / Chiến Lợi Phẩm (Hiển thị rõ tên cá & giá tiền VND, không số kg) -->
+        <div id="modal-catch-reward" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl p-5 max-w-xs w-full text-center shadow-2xl border-4 border-amber-400 animate-scale-up">
+                <div class="text-5xl mb-1" id="catch-icon">🐟</div>
+                <div class="text-xs font-bold text-slate-500 uppercase" id="catch-rarity-label">Cá Thường</div>
+                <h3 class="text-lg font-black text-slate-800 mt-0.5" id="catch-name">Cá Chép Vàng</h3>
+                
+                <div class="my-3 bg-amber-50 p-2.5 rounded-2xl border border-amber-200 flex justify-around text-xs font-extrabold text-amber-900">
+                    <div>Giá trị: <span class="text-emerald-700 text-sm font-black" id="catch-gold">+30 ⭐ EXP</span></div>
+                    <div>Thưởng: <span class="text-cyan-600 text-sm font-black" id="catch-diamonds">+0 💎</span></div>
+                    <div>Công dụng: <span class="text-sky-800 text-xs font-black" id="catch-exp">Dùng EXP / Long Nữ</span></div>
+                </div>
+
+                <div class="flex flex-col gap-2 mt-4">
+                    <button type="button" id="btn-catch-eat-now" onclick="game.eatCatchNow()" class="w-full py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-black text-xs rounded-xl shadow-lg border-b-2 border-teal-800 active:scale-95 flex items-center justify-center gap-1.5">
+                        <span>🍽️ ĂN NGAY (+<span id="catch-eat-exp-val">30</span> ⭐ EXP TÀI KHOẢN)</span>
+                    </button>
+                    <button id="btn-catch-claim" class="w-full py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xs rounded-xl shadow border-b-2 border-amber-700 active:scale-95 flex items-center justify-center gap-1">
+                        <span>🧺 Cất Vào Rương (Dùng EXP / Trả Long Nữ)</span>
+                    </button>
+                    <button id="btn-catch-double" class="w-full py-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-black text-xs rounded-xl shadow border-b-2 border-orange-700 active:scale-95 flex items-center justify-center gap-1.5">
+                        <span>🎬 XEM VIDEO NHẬN X2 CÁ</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL 1B: SỔ CÁ & BẢNG GIÁ HỒ CÁ -->
+        <div id="modal-report" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl p-4 max-w-sm w-full shadow-2xl border-2 border-emerald-500 animate-scale-up text-xs">
+                <div class="flex justify-between items-center border-b border-slate-200 pb-2 mb-3">
+                    <h3 class="text-base font-black text-emerald-900">📋 Sổ Tay & Bảng Giá HỒ CÁ</h3>
+                    <button id="btn-close-report" class="text-slate-400 hover:text-slate-700 font-black text-lg">✕</button>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2 mb-3">
+                    <div class="bg-emerald-50 border border-emerald-200 p-2.5 rounded-2xl text-center">
+                        <div class="text-[10px] font-bold text-emerald-700">Tổng Số Cá Đã Câu</div>
+                        <div class="text-lg font-black text-emerald-950" id="report-total-count">0 con</div>
+                    </div>
+                    <div class="bg-purple-50 border border-purple-200 p-2.5 rounded-2xl text-center">
+                        <div class="text-[10px] font-bold text-purple-700">Giờ Vào / Tỉ Lệ Cá To</div>
+                        <div class="text-sm font-black text-purple-950" id="report-session-info">--:-- • 0%</div>
+                    </div>
+                </div>
+
+                <div class="text-xs font-black text-slate-700 mb-1.5">🐟 Bảng Giá Các Loài Cá (HỒ CÁ):</div>
+                <div id="report-fish-prices" class="bg-slate-50 border border-slate-200 rounded-xl p-2 max-h-48 overflow-y-auto space-y-1">
+                    <!-- JS render -->
+                </div>
+
+                <button id="btn-close-report-bottom" class="w-full mt-3 py-2.5 bg-emerald-600 text-white font-black rounded-xl active:scale-95">
+                    Tiếp Tục Câu Cá
+                </button>
+            </div>
+        </div>
+
+        <!-- MODAL 1C: MUA VÉ CÂU VIP -->
+        <div id="modal-ticket" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl p-4 max-w-xs w-full shadow-2xl border-2 border-amber-400 animate-scale-up text-center text-xs">
+                <div class="text-4xl mb-1">🎫</div>
+                <h3 class="text-base font-black text-slate-800">Vé Câu Hồ VIP (5 Phút)</h3>
+                <p class="text-[11px] text-slate-600 mt-1">Vào ghế VIP có Dù Vàng che nắng! Câu không tốn Thể lực (⚡) suốt 5 phút và tăng thêm tỉ lệ dính cá giá trị cao!</p>
+
+                <div class="flex flex-col gap-2 mt-4">
+                    <button id="btn-ticket-gold" class="w-full py-2.5 bg-amber-400 hover:bg-amber-300 text-slate-900 font-black rounded-xl shadow border-b-2 border-amber-600 active:scale-95">
+                        Mua Vé Bằng 250 <span class="gold-bar-icon"></span> Vàng
+                    </button>
+                    <button id="btn-ticket-ads" class="w-full py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-black rounded-xl shadow border-b-2 border-teal-800 active:scale-95">
+                        🎬 Xem Video Nhận Vé Miễn Phí
+                    </button>
+                    <button id="btn-close-ticket" class="w-full py-1.5 text-slate-500 font-bold">Đóng</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL 1C2: MUA CẦN CÂU VIP (MỞ KHÓA CÂU CÁ TO) -->
+        <div id="modal-vip-rod" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl p-4 max-w-xs w-full shadow-2xl border-4 border-amber-400 animate-scale-up text-center text-xs">
+                <div class="text-4xl mb-1">👑</div>
+                <h3 class="text-base font-black text-amber-950">Cần Câu VIP — Săn Cá To</h3>
+                <p id="vip-rod-status-text" class="text-[11px] text-slate-600 mt-1">
+                    Cần thường chỉ câu được cá nhỏ. Hãy <b>Mua Cần Câu VIP</b> để mở khóa toàn bộ <b>Cá To</b> giá cao (320đ – 1,200đ + 💎)!
+                </p>
+
+                <div class="bg-amber-50 border border-amber-200 rounded-2xl p-2 mt-2.5 text-left text-[10.5px] space-y-1 text-amber-950">
+                    <div class="font-black text-center text-amber-800">🐟 Các Loài Cá To Chỉ Có Cần VIP Mới Câu Được:</div>
+                    <div class="flex justify-between"><span>🐡 Cá Trắm Đen</span><b class="text-emerald-700">320đ + 1💎</b></div>
+                    <div class="flex justify-between"><span>🐟 Cá Lăng Suối</span><b class="text-emerald-700">520đ + 2💎</b></div>
+                    <div class="flex justify-between"><span>🐳 Cá Hải Tượng</span><b class="text-emerald-700">850đ + 4💎</b></div>
+                    <div class="flex justify-between"><span>📦 Rương Kho Báu</span><b class="text-emerald-700">1,200đ + 6💎</b></div>
+                </div>
+
+                <div class="flex flex-col gap-2 mt-3">
+                    <button id="btn-buy-vip-rod-gold" class="w-full py-2.5 bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 font-black rounded-xl shadow border-b-2 border-amber-700 active:scale-95">
+                        👑 Mua Vĩnh Viễn: 2,500 <span class="gold-bar-icon"></span> Vàng
+                    </button>
+                    <button id="btn-try-vip-rod-ad" class="w-full py-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-black rounded-xl shadow border-b-2 border-teal-800 active:scale-95">
+                        🎬 Dùng Thử Cần VIP 10 Phút
+                    </button>
+                    <button id="btn-close-vip-rod" class="w-full py-1.5 text-slate-500 font-bold">Đóng</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL 1C2B: TRUNG TÂM VIP ACCESS (MUA VIP KIM CƯƠNG / QUÀ NGÀY / TIẾT KIỆM VIP) -->
+        <div id="modal-vip-center" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-3">
+            <div class="bg-[#c98f52] rounded-2xl p-2 max-w-sm w-full shadow-2xl border-4 border-[#5c3010] animate-scale-up text-xs">
+                <!-- Header gỗ -->
+                <div class="flex items-center justify-between gap-1 mb-1.5 px-1">
+                    <div class="flex items-center gap-1.5">
+                        <span class="text-xl drop-shadow">👑</span>
+                        <span class="px-2 py-0.5 rounded-lg bg-[#efd3a3] border-2 border-[#5c3010] font-black text-[#4a260a] text-[12px]">VIP Access</span>
+                        <span id="vip-modal-status-badge" class="px-2 py-0.5 rounded-lg bg-slate-800 text-amber-300 font-black text-[9.5px]">Chưa VIP</span>
+                    </div>
+                    <button id="btn-close-vip-center" class="w-7 h-7 rounded-lg bg-[#efd3a3] border-2 border-[#5c3010] text-[#5c3010] font-black text-sm flex items-center justify-center active:scale-95">✕</button>
+                </div>
+
+                <!-- 2 Tab VIP -->
+                <div class="grid grid-cols-2 gap-1 mb-1.5">
+                    <button class="vip-center-tab py-1.5 px-1 rounded-t-xl font-black text-[10.5px] bg-[#efd3a3] text-[#4a260a] border-2 border-b-0 border-[#5c3010]" data-vip-tab="buy">👑 Mua VIP</button>
+                    <button class="vip-center-tab py-1.5 px-1 rounded-t-xl font-black text-[10.5px] bg-[#b3743b] text-amber-100 border-2 border-b-0 border-[#5c3010] relative" data-vip-tab="daily">
+                        🎁 Quà Ngày
+                        <span id="vip-daily-dot" class="hidden inline-block w-1.5 h-1.5 rounded-full bg-rose-500 ml-0.5 align-middle"></span>
+                    </button>
+                </div>
+
+                <!-- Nội dung Khung Gỗ Sáng -->
+                <div class="bg-[#d7a066] border-2 border-[#5c3010] rounded-xl p-2.5 max-h-[74vh] overflow-y-auto text-[#4a260a]">
+                    <!-- TAB 1: MUA VIP ACCESS (GIỐNG ẢNH 3) -->
+                    <div id="vip-tab-buy" class="space-y-2.5">
+                        <div class="flex justify-between items-center text-[10.5px] font-bold">
+                            <span class="leading-snug">Mua VIP giảm phí bán P2P còn 12,5% & nhận Vàng mỗi ngày!</span>
+                            <span class="bg-cyan-950 text-cyan-200 px-2 py-0.5 rounded-lg font-black flex-shrink-0 ml-1">💎 <span id="vip-owned-diamonds">0</span></span>
+                        </div>
+
+                        <!-- 3 Gói VIP Kim Cương đúng giá: 1500 / 2500 / 4500 -->
+                        <div class="grid grid-cols-3 gap-1.5">
+                            <button type="button" class="vip-plan-card rounded-xl bg-[#efd3a3] border-2 border-[#5c3010] p-1.5 flex flex-col items-center gap-1 shadow hover:brightness-105 active:scale-95 transition ring-2 ring-amber-500" data-vip-plan="vip_1m">
+                                <div class="text-[11px] font-black text-[#4a260a]">1 Tháng</div>
+                                <div class="text-2xl py-0.5 drop-shadow">🧰</div>
+                                <div class="w-full py-0.5 rounded-md bg-gradient-to-b from-amber-400 to-amber-500 border border-[#5c3010] font-black text-[10.5px] text-slate-950 flex items-center justify-center gap-0.5">
+                                    <span>💎</span><span>1500</span>
+                                </div>
+                            </button>
+                            <button type="button" class="vip-plan-card rounded-xl bg-[#efd3a3] border-2 border-[#5c3010] p-1.5 flex flex-col items-center gap-1 shadow hover:brightness-105 active:scale-95 transition relative" data-vip-plan="vip_3m">
+                                <span class="absolute -top-2 right-1 px-1 py-0.2 bg-rose-600 text-white text-[8px] font-black rounded">HOT</span>
+                                <div class="text-[11px] font-black text-[#4a260a]">3 Tháng</div>
+                                <div class="text-2xl py-0.5 drop-shadow">💼</div>
+                                <div class="w-full py-0.5 rounded-md bg-gradient-to-b from-amber-400 to-amber-500 border border-[#5c3010] font-black text-[10.5px] text-slate-950 flex items-center justify-center gap-0.5">
+                                    <span>💎</span><span>2500</span>
+                                </div>
+                            </button>
+                            <button type="button" class="vip-plan-card rounded-xl bg-[#efd3a3] border-2 border-[#5c3010] p-1.5 flex flex-col items-center gap-1 shadow hover:brightness-105 active:scale-95 transition" data-vip-plan="vip_6m">
+                                <div class="text-[11px] font-black text-[#4a260a]">6 Tháng</div>
+                                <div class="text-2xl py-0.5 drop-shadow">👑</div>
+                                <div class="w-full py-0.5 rounded-md bg-gradient-to-b from-amber-400 to-amber-500 border border-[#5c3010] font-black text-[10.5px] text-slate-950 flex items-center justify-center gap-0.5">
+                                    <span>💎</span><span>4500</span>
+                                </div>
+                            </button>
+                        </div>
+
+                        <!-- Nút xác nhận mua gói VIP đang chọn -->
+                        <button type="button" id="btn-confirm-buy-vip" class="w-full py-2 rounded-xl bg-gradient-to-b from-emerald-500 to-emerald-600 text-white font-black text-xs border-2 border-[#5c3010] shadow active:scale-95">
+                            👑 Kích Hoạt VIP 1 Tháng — 1,500 💎
+                        </button>
+
+                        <!-- Danh sách quyền lợi VIP -->
+                        <div class="bg-[#e8be85] rounded-xl border border-[#8a4f1d] p-2.5 space-y-2 text-[11px] font-bold">
+                            <div class="flex items-center gap-2">
+                                <span class="text-base w-5 text-center">🏷️</span>
+                                <span>Phí bán Chợ P2P giảm từ <b>20% ➔ 12,5%</b> (Đất C2 giảm còn 10%, Đất C3 còn 7,5%!)</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-base w-5 text-center">🚀</span>
+                                <span><b>Bán hàng không giới hạn</b> trên Chợ (Tài khoản thường giới hạn 1 món/ngày)</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-5 flex justify-center"><span class="gold-bar-icon text-base"></span></span>
+                                <span>Nhận <b>Vàng miễn phí mỗi ngày</b> tại mục <b>🎁 Quà Ngày</b></span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-base w-5 text-center">🔥</span>
+                                <span><b>Nấu tối đa 4 lò bánh cùng lúc</b> tại Bếp Bánh (Tài khoản thường tối đa 1 lò)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 2: QUÀ VÀNG HÀNG NGÀY (GIỐNG ẢNH 2) -->
+                    <div id="vip-tab-daily" class="hidden space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2 py-0.5 rounded-lg bg-amber-300 border-2 border-[#5c3010] font-black text-[11px] text-[#4a260a]">Quà Vàng Hàng Ngày</span>
+                            <div class="flex flex-col items-end">
+                                <span id="vip-daily-streak-badge" class="text-[10px] font-black text-[#4a260a]">Chuỗi: 0/7 ngày</span>
+                                <span class="text-[8.5px] font-bold text-[#7a4115]">Nhận quà đến khi hết VIP</span>
+                            </div>
+                        </div>
+                        <p id="vip-daily-subtitle" class="text-[10.5px] font-bold text-[#4a260a]">
+                            Vào nhận Vàng VIP mỗi ngày trong hạn VIP (Ngày 7 nhận +35 Vàng, xoay vòng 7 ngày)!
+                        </p>
+
+                        <!-- 7 ngày phần thưởng cuộn ngang / lưới -->
+                        <div id="vip-daily-track" class="grid grid-cols-4 gap-1.5">
+                            <!-- JS render 7 ngày quà vàng -->
+                        </div>
+
+                        <!-- Thanh tiến độ 7 ngày -->
+                        <div class="w-full h-2.5 rounded-full bg-[#efd3a3] border border-[#5c3010] overflow-hidden">
+                            <div id="vip-daily-progress-bar" class="h-full bg-gradient-to-r from-amber-400 to-emerald-500 transition-all duration-300" style="width: 14%"></div>
+                        </div>
+
+                        <button type="button" id="btn-claim-vip-daily" class="w-full py-2.5 rounded-xl bg-[#efd3a3] border-2 border-[#5c3010] text-[#4a260a] font-black text-xs shadow active:scale-95">
+                            🎁 Nhận Vàng Hôm Nay
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL 1C3: ĐĂNG BÁN VẬT PHẨM LÊN CHỢ P2P -->
+        <div id="modal-list-item" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl p-4 max-w-xs w-full shadow-2xl border-4 border-emerald-500 animate-scale-up text-xs">
+                <div class="flex justify-between items-center border-b border-slate-200 pb-2 mb-2.5">
+                    <h3 class="text-base font-black text-emerald-950">🏷️ Đăng Bán Lên Chợ P2P</h3>
+                    <button id="btn-close-list-item" class="text-slate-400 hover:text-slate-700 font-black text-lg">✕</button>
+                </div>
+
+                <div class="flex items-center gap-2.5 bg-amber-50 border border-amber-200 p-2.5 rounded-2xl mb-2.5">
+                    <span id="list-item-icon" class="text-3xl">🌻</span>
+                    <div>
+                        <div id="list-item-name" class="font-black text-slate-900 text-sm">Hướng Dương</div>
+                        <div class="text-[10px] text-amber-800">Trong kho: <b id="list-item-owned">0</b> • Giá tham khảo: <b id="list-item-ref">18đ</b>/món</div>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <div>
+                        <label class="font-bold text-slate-700 block mb-0.5">Số lượng muốn bán:</label>
+                        <input type="number" id="list-item-qty" min="1" value="1" class="w-full px-3 py-1.5 border-2 border-slate-200 rounded-xl font-black text-slate-900 focus:border-emerald-500">
+                    </div>
+                    <div>
+                        <label class="font-bold text-slate-700 block mb-0.5">Tổng giá bán muốn niêm yết (VND):</label>
+                        <input type="number" id="list-item-price" min="10" step="0.1" value="50" class="w-full px-3 py-1.5 border-2 border-slate-200 rounded-xl font-black text-emerald-700 focus:border-emerald-500">
+                        <div id="list-price-range-notice" class="hidden text-[10px] font-bold rounded-lg p-1.5 mt-1"></div>
+                    </div>
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-2 space-y-0.5 text-[10.5px]">
+                        <div class="flex justify-between"><span>Giá người mua trả:</span><b id="list-preview-gross">50đ</b></div>
+                        <div class="flex justify-between text-rose-600"><span id="list-fee-label">Phí sàn Chợ P2P (20%):</span><b id="list-preview-fee">-10đ</b></div>
+                        <div class="flex justify-between text-emerald-700 font-black border-t border-slate-200 pt-1"><span>Bạn thực nhận khi bán:</span><b id="list-preview-net">+40đ</b></div>
+                        <div id="list-vip-promo" class="hidden mt-1 pt-1 border-t border-amber-200 text-[9.5px] text-amber-800 flex items-center justify-between font-bold">
+                            <span>👑 Có VIP chỉ mất <b>12,5%</b> phí chợ!</span>
+                            <button type="button" id="btn-list-open-vip" class="underline text-rose-600 font-black">Mua VIP</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex gap-2 mt-3">
+                    <button id="btn-cancel-list-item" class="px-4 py-2 bg-slate-200 text-slate-700 font-bold rounded-xl active:scale-95">Hủy</button>
+                    <button id="btn-confirm-list-item" class="flex-1 py-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-black rounded-xl shadow border-b-2 border-teal-800 active:scale-95">
+                        ✅ Đăng Bán Ngay
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL 1D0: CỬA HÀNG NPC NÔNG SẢN (KIỂU ẢNH 2 & 3 - MUA BÁN NGAY TRỰC TIẾP VỚI GAME) -->
+        <div id="modal-npc-shop" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-3">
+            <div class="relative w-full max-w-sm mt-10">
+                <!-- Nhân vật Phú Nông thò đầu cầm cà rốt phía trên khung gỗ y như Ảnh 2 & 3 -->
+                <div class="absolute -top-12 left-4 z-10 pointer-events-none flex items-end gap-1">
+                    <svg viewBox="0 0 80 68" class="w-20 h-16 drop-shadow-lg">
+                        <circle cx="52" cy="30" r="10" fill="#ea580c" stroke="#7c2d12" stroke-width="2"/>
+                        <rect x="22" y="14" width="32" height="30" rx="10" fill="#fde68a" stroke="#78350f" stroke-width="2"/>
+                        <path d="M18 26 Q20 6 38 6 Q55 6 56 26 Q46 18 30 22 Z" fill="#ea580c" stroke="#7c2d12" stroke-width="2"/>
+                        <!-- Cười híp mắt -->
+                        <path d="M29 31 Q32 27 35 31" stroke="#1e293b" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+                        <path d="M41 31 Q44 27 47 31" stroke="#1e293b" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+                        <path d="M34 36 Q38 41 43 36 Z" fill="#be123c"/>
+                        <!-- Áo + Cà rốt trên tay -->
+                        <rect x="20" y="44" width="36" height="22" rx="6" fill="#dc2626" stroke="#7f1d1d" stroke-width="2"/>
+                        <rect x="26" y="48" width="24" height="18" fill="#1e3a8a"/>
+                        <polygon points="55,34 63,36 56,56" fill="#f97316" stroke="#9a3412" stroke-width="1.5"/>
+                        <path d="M58 34 Q55 24 61 27 Q66 23 61 35 Z" fill="#16a34a"/>
+                    </svg>
+                </div>
+
+                <!-- Khung Bảng Gỗ Chính -->
+                <div class="bg-[#c98f52] rounded-2xl p-2 shadow-2xl border-4 border-[#5c3010] text-xs">
+                    <!-- Thanh Tab: Mua | Bán | Hướng Dẫn | X -->
+                    <div class="flex items-center justify-between gap-1 mb-2 pl-20">
+                        <div class="flex gap-1 flex-1">
+                            <button id="npc-tab-buy" class="npc-shop-tab flex-1 py-1.5 px-2 rounded-t-xl font-black bg-[#efd3a3] text-[#4a260a] border-2 border-b-0 border-[#5c3010]" data-npc-tab="buy">
+                                🌱 Mua
+                            </button>
+                            <button id="npc-tab-sell" class="npc-shop-tab flex-1 py-1.5 px-2 rounded-t-xl font-black bg-[#b3743b] text-amber-100 border-2 border-b-0 border-[#5c3010]" data-npc-tab="sell">
+                                🌻 Bán
+                            </button>
+                            <button id="npc-tab-guide" class="npc-shop-tab py-1.5 px-2 rounded-t-xl font-black bg-[#b3743b] text-amber-100 border-2 border-b-0 border-[#5c3010]" data-npc-tab="guide">
+                                📖
+                            </button>
+                        </div>
+                        <button id="btn-close-npc-shop" class="w-7 h-7 bg-rose-500 hover:bg-rose-400 text-white font-black rounded-lg border-2 border-[#5c3010] shadow active:scale-95">✕</button>
+                    </div>
+
+                    <!-- TAB 1: MUA 15 HẠT GIỐNG -->
+                    <div id="npc-panel-buy" class="space-y-2">
+                        <!-- Hộp Chi Tiết Hạt Giống Đang Chọn -->
+                        <div class="bg-[#efd3a3] border-2 border-[#784319] rounded-xl p-2.5 text-center space-y-1.5 shadow-inner">
+                            <div class="flex items-center justify-center gap-1.5 flex-wrap">
+                                <span id="npc-buy-tier-badge" class="inline-block bg-emerald-100 text-emerald-900 border border-emerald-500 text-[10px] font-black px-2 py-0.5 rounded-full shadow-xs">
+                                    🌿 Hạt Giống Thường • Max 100
+                                </span>
+                                <span class="inline-block bg-rose-600 text-white text-[10px] font-black px-2.5 py-0.5 rounded-full border border-rose-900 shadow-xs" id="npc-buy-stock">
+                                    100/100
+                                </span>
+                            </div>
+                            <div class="font-black text-base text-[#3b1c06] leading-tight" id="npc-buy-name">Hạt Rau Mầm</div>
+                            <div class="text-[10px] font-bold text-[#784319]" id="npc-buy-type">🌿 Hạt Giống Thường • Tối đa 100 hạt</div>
+
+                            <!-- Sơ đồ Hạt Giống Riêng -> Đất -> Nông sản -->
+                            <div class="flex items-center justify-center gap-2 py-1 text-xl" id="npc-buy-flow">
+                                <span class="bg-[#dca86a] p-1 rounded-lg border border-[#784319] inline-flex items-center justify-center">🌱</span>
+                                <span class="text-xs font-black text-[#5c3010]">▶</span>
+                                <span class="bg-[#8b5a2b] text-white px-2 py-1 rounded-lg border border-[#5c3010] text-sm">🟫</span>
+                                <span class="text-xs font-black text-[#5c3010]">▶</span>
+                                <span class="bg-[#dca86a] p-1 rounded-lg border border-[#784319] inline-flex items-center justify-center">🌱</span>
+                            </div>
+
+                            <div class="flex items-center justify-center gap-4 text-[11px] font-black text-[#4a260a]">
+                                <span id="npc-buy-time">⏱️ 5 phút</span>
+                                <span id="npc-buy-price" class="flex items-center gap-0.5">1 <span class="gold-bar-icon"></span></span>
+                            </div>
+
+                            <div id="npc-buy-owned" class="text-[10px] font-extrabold text-emerald-900 bg-emerald-100/80 rounded-lg py-0.5 px-2 inline-block">
+                                Hạt đang có trong túi: 0
+                            </div>
+
+                            <div id="npc-buy-limit-notice" class="hidden text-[10px] font-black text-rose-800 bg-rose-100 border border-rose-400 rounded-lg py-1 px-2">
+                                🔒 Đã mua hết giới hạn loại hạt này! Hãy đặt lại kho hạt giống (200💎) để mua tiếp.
+                            </div>
+
+                            <div class="grid grid-cols-3 gap-1.5 pt-1">
+                                <button id="btn-npc-buy-1" class="py-1.5 bg-[#f7e7c8] hover:bg-white text-[#4a260a] font-black rounded-xl border-2 border-[#784319] shadow active:scale-95">Mua 1</button>
+                                <button id="btn-npc-buy-5" class="py-1.5 bg-[#f7e7c8] hover:bg-white text-[#4a260a] font-black rounded-xl border-2 border-[#784319] shadow active:scale-95">Mua 5</button>
+                                <button id="btn-npc-buy-10" class="py-1.5 bg-[#f7e7c8] hover:bg-white text-[#4a260a] font-black rounded-xl border-2 border-[#784319] shadow active:scale-95">Mua 10</button>
+                            </div>
+                        </div>
+
+                        <!-- Nút đặt lại duy nhất cho toàn bộ Hạt Giống (200 Kim Cương) -->
+                        <button id="btn-npc-reset-all-seeds" type="button" class="w-full py-1.5 bg-gradient-to-b from-cyan-400 to-sky-500 hover:brightness-105 text-slate-950 font-black text-[11px] rounded-xl border-2 border-sky-900 shadow active:scale-95">
+                            💎 Đặt Lại Hạt Giống (200 💎)
+                        </button>
+
+                        <!-- Phân loại 3 nhóm hạt giống -->
+                        <div id="npc-seed-tier-tabs" class="grid grid-cols-4 gap-1">
+                            <button type="button" class="npc-seed-tier-btn py-1 rounded-lg font-black text-[9.5px] border border-[#5c3010] bg-[#5c3010] text-amber-100 shadow-xs active:scale-95" data-npc-seed-tier="all">Tất Cả (15)</button>
+                            <button type="button" class="npc-seed-tier-btn py-1 rounded-lg font-black text-[9.5px] border border-emerald-700 bg-emerald-100 text-emerald-900 shadow-xs active:scale-95" data-npc-seed-tier="normal">🌿 Thường (100)</button>
+                            <button type="button" class="npc-seed-tier-btn py-1 rounded-lg font-black text-[9.5px] border border-sky-700 bg-sky-100 text-sky-900 shadow-xs active:scale-95" data-npc-seed-tier="medium">💠 TB (30-50)</button>
+                            <button type="button" class="npc-seed-tier-btn py-1 rounded-lg font-black text-[9.5px] border border-amber-700 bg-amber-100 text-amber-950 shadow-xs active:scale-95" data-npc-seed-tier="premium">👑 Cao Cấp (10)</button>
+                        </div>
+
+                        <!-- Lưới 15 Ô Hạt Giống Chia Theo 3 Nhóm -->
+                        <div class="bg-[#e3be84] border-2 border-[#784319] rounded-xl p-2">
+                            <div id="npc-buy-grid" class="grid grid-cols-3 gap-2 max-h-60 overflow-y-auto pt-2 pr-0.5">
+                                <!-- JS render -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 2: BÁN NÔNG SẢN TRỰC TIẾP NGAY CHO GAME -->
+                    <div id="npc-panel-sell" class="hidden space-y-2">
+                        <div class="bg-[#efd3a3] border-2 border-[#784319] rounded-xl p-2.5 space-y-1.5 shadow-inner">
+                            <div class="flex items-center gap-2">
+                                <span id="npc-sell-icon" class="text-3xl bg-[#dca86a] p-1 rounded-xl border border-[#784319]">🌱</span>
+                                <div class="min-w-0 flex-1">
+                                    <div id="npc-sell-name" class="font-black text-base text-[#3b1c06] truncate">Rau Mầm (5 phút)</div>
+                                    <div id="npc-sell-desc" class="text-[10px] font-bold text-[#6b3a15]">Mầm rau xanh non mềm, dễ trồng và nảy mầm nhanh.</div>
+                                </div>
+                            </div>
+
+                            <div class="flex justify-between items-center bg-[#f7e7c8] px-2.5 py-1.5 rounded-xl border border-[#8c5426]">
+                                <div class="text-[11px] font-black text-amber-950 flex items-center gap-1">Giá thu mua trực tiếp: <span id="npc-sell-price" class="text-sm text-amber-700 flex items-center gap-0.5">+2 <span class="gold-bar-icon"></span></span></div>
+                            </div>
+
+                            <div class="text-[10.5px] font-black text-[#4a260a] text-right">
+                                Trong kho bạn đang có: <span id="npc-sell-owned" class="text-rose-700">0</span>
+                            </div>
+
+                            <!-- 3 Nút: Bán 1 | Bán 10 | Bán Tất Cả -->
+                            <div class="grid grid-cols-2 gap-1.5">
+                                <button id="btn-npc-sell-1" class="py-1.5 bg-[#f7e7c8] hover:bg-white text-[#4a260a] font-black rounded-xl border-2 border-[#784319] shadow active:scale-95">Bán 1</button>
+                                <button id="btn-npc-sell-10" class="py-1.5 bg-[#f7e7c8] hover:bg-white text-[#4a260a] font-black rounded-xl border-2 border-[#784319] shadow active:scale-95">Bán 10</button>
+                            </div>
+                            <button id="btn-npc-sell-all" class="w-full py-2 bg-gradient-to-b from-amber-400 to-amber-500 hover:brightness-105 text-slate-950 font-black rounded-xl border-2 border-[#784319] shadow active:scale-95 flex items-center justify-center gap-1">
+                                <span class="gold-bar-icon"></span>
+                                <span>Bán Tất Cả (Nhận Vàng)</span>
+                            </button>
+                        </div>
+
+                        <!-- Lưới Ô Vuông Kho Nông Sản Để Chọn Bán -->
+                        <div class="bg-[#e3be84] border-2 border-[#784319] rounded-xl p-2">
+                            <div id="npc-sell-grid" class="grid grid-cols-3 gap-2 max-h-60 overflow-y-auto pt-2 pr-0.5">
+                                <!-- JS render -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 3: HƯỚNG DẪN PHÚ NÔNG -->
+                    <div id="npc-panel-guide" class="hidden bg-[#efd3a3] border-2 border-[#784319] rounded-xl p-3 space-y-2 text-[#4a260a]">
+                        <div class="font-black text-sm">📖 Hướng Dẫn Phú Nông</div>
+                        <p class="text-[11px] leading-relaxed">
+                            1. <b>3 Nhóm Hạt Giống &amp; Giới Hạn Mua:</b><br>
+                            &nbsp;&nbsp;• <b>🌿 Thường (5 loại đầu):</b> Tối đa <b>100</b> hạt/loại.<br>
+                            &nbsp;&nbsp;• <b>💠 Trung Bình (5 loại giữa):</b> Tối đa <b>30 - 50</b> hạt/loại (Cà Rốt, Cà Chua, Lúa Nước: 50 hạt; Bắp Ngô, Hướng Dương: 30 hạt).<br>
+                            &nbsp;&nbsp;• <b>👑 Cao Cấp (5 loại cuối):</b> Tối đa <b>10</b> hạt/loại.<br>
+                            2. <b>Đặt Lại Bằng Kim Cương:</b><br>
+                            &nbsp;&nbsp;• <b>💎 Đặt Lại Hạt Giống:</b> Tốn <b>200 💎</b> để hồi đầy cả 15 loại hạt giống.<br>
+                            &nbsp;&nbsp;• <b>💎 Đặt Lại Tài Nguyên:</b> Tốn <b>200 💎</b> để hồi đầy các mỏ Gỗ, Đá, Sắt, Vàng trên đảo &amp; xưởng cuốc.<br>
+                            3. <b>Tab Bán (🌻):</b> Thu hoạch xong bán cho <b>Phú Nông</b> nhận <b>Vàng</b> hoặc mở <b>🎒 Kho Đồ</b> để quản lý sản phẩm!
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL 1D2: XƯỞNG THỢ RÈN (CHẾ TẠO RÌU & CUỐC KIỂU ẢNH 1 & 2) -->
+        <div id="modal-blacksmith" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-3">
+            <div class="relative w-full max-w-sm mt-8">
+                <!-- Nhân vật Thợ Rèn thò đầu trên bảng gỗ -->
+                <div class="absolute -top-11 left-4 z-10 pointer-events-none">
+                    <svg viewBox="0 0 72 60" class="w-16 h-14 drop-shadow-lg">
+                        <rect x="20" y="10" width="32" height="26" rx="10" fill="#fed7aa" stroke="#78350f" stroke-width="2"/>
+                        <rect x="18" y="16" width="5" height="11" rx="2" fill="#94a3b8" stroke="#475569" stroke-width="1"/>
+                        <rect x="49" y="16" width="5" height="11" rx="2" fill="#94a3b8" stroke="#475569" stroke-width="1"/>
+                        <circle cx="30" cy="24" r="2" fill="#1e293b"/>
+                        <circle cx="42" cy="24" r="2" fill="#1e293b"/>
+                        <circle cx="27" cy="28" r="2" fill="#fb7185" opacity="0.7"/>
+                        <circle cx="45" cy="28" r="2" fill="#fb7185" opacity="0.7"/>
+                        <rect x="20" y="36" width="32" height="20" rx="5" fill="#78350f" stroke="#451a03" stroke-width="2"/>
+                        <rect x="26" y="36" width="20" height="18" fill="#f1f5f9"/>
+                    </svg>
+                </div>
+
+                <div class="bg-[#c98f52] rounded-2xl p-2 shadow-2xl border-4 border-[#5c3010] text-xs text-[#4a260a]">
+                    <div class="flex items-center justify-between gap-1 mb-1.5 pl-16">
+                        <div class="flex gap-1 flex-1">
+                            <button class="smith-tab-btn flex-1 py-1.5 px-2 rounded-t-xl font-black bg-[#efd3a3] text-[#4a260a] border-2 border-b-0 border-[#5c3010]" data-smith-tab="tools">
+                                ⚒️ Công Cụ
+                            </button>
+                            <button class="smith-tab-btn py-1.5 px-2.5 rounded-t-xl font-black bg-[#b3743b] text-amber-100 border-2 border-b-0 border-[#5c3010]" data-smith-tab="guide">
+                                📖 Hướng Dẫn
+                            </button>
+                        </div>
+                        <button id="btn-close-blacksmith" class="w-7 h-7 bg-rose-500 hover:bg-rose-400 text-white font-black rounded-lg border-2 border-[#5c3010] shadow active:scale-95">✕</button>
+                    </div>
+
+                    <!-- TAB TOOLS GIỐNG ẢNH 1 -->
+                    <div id="smith-panel-tools" class="grid grid-cols-12 gap-1.5">
+                        <!-- Cột trái: Danh sách công cụ & Đặt Lại Tài Nguyên -->
+                        <div class="col-span-5 bg-[#e3be84] border-2 border-[#784319] rounded-xl p-1.5 flex flex-col justify-between gap-1.5">
+                            <div id="blacksmith-tools-grid" class="grid grid-cols-2 gap-1.5">
+                                <!-- JS render Axe, Pickaxe, Stone Pickaxe, Iron Pickaxe -->
+                            </div>
+                            <div class="pt-1 border-t border-[#784319]/40 mt-1">
+                                <button id="btn-reset-all-resources" onclick="game.resetAllResourcesWithDiamonds()" type="button" class="w-full py-1.5 px-1 bg-gradient-to-b from-cyan-400 to-sky-500 hover:brightness-105 text-slate-950 font-black rounded-xl border-2 border-sky-900 shadow active:scale-95 text-[9px] flex items-center justify-center gap-1 leading-tight text-center" title="Hồi đầy các mỏ tài nguyên và kho cuốc">
+                                    <span>💎 Đặt Lại Tài Nguyên (200💎)</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Cột phải: Chi tiết công cụ & Craft 1 / Craft 10 -->
+                        <div class="col-span-7 bg-[#efd3a3] border-2 border-[#784319] rounded-xl p-2 flex flex-col justify-between items-center text-center space-y-1.5">
+                            <span id="smith-tool-stock" class="px-2 py-0.5 rounded bg-sky-600 text-white border border-[#1e3a8a] text-[9.5px] font-black">50/50 trong kho</span>
+                            <div>
+                                <div id="smith-tool-name" class="font-black text-sm text-[#3b1c06]">Cuốc Gỗ</div>
+                                <div id="smith-tool-icon" class="my-1 flex justify-center">⛏️</div>
+                                <div id="smith-tool-desc" class="text-[9.5px] font-bold text-[#6b3a15]">Dùng để chặt Gỗ</div>
+                            </div>
+                            <div class="text-[10px] font-black text-emerald-800 bg-emerald-100/80 px-2 py-0.5 rounded-lg">
+                                Đang có: <span id="smith-tool-owned">0</span> cái
+                            </div>
+                            <div id="smith-tool-costs" class="w-full space-y-1 text-[10px] font-black">
+                                <!-- JS render nguyên liệu rèn -->
+                            </div>
+                            <div class="w-full grid grid-cols-2 gap-1 pt-0.5">
+                                <button id="btn-craft-tool-1" class="py-1.5 rounded-lg bg-[#f7e7c8] hover:bg-white border-2 border-[#784319] font-black text-[10.5px] shadow active:scale-95">Rèn 1</button>
+                                <button id="btn-craft-tool-10" class="py-1.5 rounded-lg bg-[#f7e7c8] hover:bg-white border-2 border-[#784319] font-black text-[10.5px] shadow active:scale-95">Rèn 10</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB HƯỚNG DẪN THỢ RÈN -->
+                    <div id="smith-panel-guide" class="hidden bg-[#efd3a3] border-2 border-[#784319] rounded-xl p-3 space-y-2 text-[#4a260a]">
+                        <div class="font-black text-sm">⚒️ Công Thức Chế Tạo 4 Loại Cuốc</div>
+                        <p class="text-[11px] leading-relaxed">
+                            • <b>Cuốc Gỗ</b> (<code>20 Vàng</code>) ➔ Dùng để chặt <b>🌳 Gỗ</b> (Max: 50)<br>
+                            • <b>Cuốc Đá</b> (<code>20 Vàng + 3 Gỗ</code>) ➔ Dùng để chặt <b>⛰️ Đá</b> (Max: 30)<br>
+                            • <b>Cuốc Sắt</b> (<code>20 Vàng + 3 Gỗ + 5 Đá</code>) ➔ Dùng để chặt <b>⚙️ Sắt</b> (Max: 20)<br>
+                            • <b>Cuốc Vàng</b> (<code>80 Vàng + 3 Gỗ + 5 Sắt</code>) ➔ Dùng để chặt <b>✨ Vàng</b> (Max: 10)<br>
+                            Mở thêm ô đất ở <b>Vườn Cây</b> để nhận thêm Cây Gỗ, Mỏ Đá, Mỏ Sắt &amp; Mỏ Vàng!
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL NÂNG CẤP TRẠI GÀ (HIỂN THỊ ĐIỀU KIỆN & NÂNG CẤP) -->
+        <div id="modal-coop-upgrade" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-3">
+            <div class="bg-gradient-to-b from-[#fbf5e6] to-[#f5ebd2] rounded-3xl p-3.5 max-w-sm w-full max-h-[92vh] overflow-y-auto shadow-2xl border-4 border-[#78350f] text-slate-800 text-xs animate-scale-up flex flex-col">
+                <div class="flex justify-between items-center border-b-2 border-[#78350f]/20 pb-2 mb-2">
+                    <h3 id="coop-upgrade-modal-title" class="text-sm font-black text-[#5c2807] flex items-center gap-1.5">
+                        <span>🏡</span> Nâng Cấp Trại Gà
+                    </h3>
+                    <button id="btn-close-coop-upgrade" class="text-[#78350f] hover:text-black font-black text-lg p-0.5" onclick="game.closeCoopUpgradeModal()">✕</button>
+                </div>
+                <div id="coop-upgrade-modal-content" class="space-y-2.5">
+                    <!-- Render by JS -->
+                </div>
+                <button onclick="game.closeCoopUpgradeModal()" class="w-full mt-3 py-2 bg-amber-200 hover:bg-amber-300 text-amber-950 font-bold rounded-xl active:scale-95 text-[11px] border border-amber-400">
+                    Đóng
+                </button>
+            </div>
+        </div>
+
+        <!-- MODAL 1D: NHIỆM VỤ GIAO NỘP TÀI NGUYÊN (CHỈ NHẬN VÀNG) -->
+        <div id="modal-quests" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl p-3.5 sm:p-4 max-w-md w-full shadow-2xl border-2 border-amber-500 animate-scale-up text-xs">
+                <div class="flex justify-between items-center border-b border-slate-200 pb-2 mb-2">
+                    <h3 class="text-sm sm:text-base font-black text-amber-900 flex items-center gap-1.5">
+                        <span>📦</span>
+                        <span>Nhiệm Vụ Hàng Ngày (Thương Gia • Đồng Nát • Long Nữ)</span>
+                    </h3>
+                    <button id="btn-close-quests" class="text-slate-400 hover:text-slate-700 font-black text-lg">✕</button>
+                </div>
+                <div id="quests-list" class="space-y-2 max-h-[75vh] sm:max-h-[500px] overflow-y-auto pr-1">
+                    <!-- JS render -->
+                </div>
+                <button id="btn-close-quests-bottom" class="w-full mt-3 py-2.5 bg-amber-500 text-slate-950 font-black rounded-xl active:scale-95">
+                    Quay Lại Chơi Game
+                </button>
+            </div>
+        </div>
+
+        <!-- MODAL CHỌN LOẠI HẠT GIỐNG ĐỂ GIEO TRỒNG (15 LOẠI HẠT GIỐNG) -->
+        <div id="modal-select-seed" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-xs flex items-center justify-center p-3">
+            <div class="bg-gradient-to-b from-[#fbf5e6] to-[#f5ebd2] rounded-3xl p-3.5 max-w-sm w-full max-h-[90vh] overflow-hidden flex flex-col shadow-2xl border-4 border-[#78350f] text-slate-800 text-xs">
+                <div class="flex justify-between items-center border-b-2 border-[#78350f]/20 pb-2 mb-2">
+                    <div>
+                        <h3 class="text-sm font-black text-[#5c2807] flex items-center gap-1">
+                            <span>🌾</span> Chọn Loại Hạt Giống Gieo Trồng
+                        </h3>
+                        <p class="text-[10px] text-[#78350f] font-bold">Chọn 1 loại hạt, sau đó chỉ cần bấm vào ô đất trống để trồng ngay!</p>
+                    </div>
+                    <button id="btn-close-select-seed" class="text-slate-400 hover:text-slate-700 font-black text-lg px-2">✕</button>
+                </div>
+
+                <!-- Lọc Theo Cấp Hạt: Tất Cả (15) / Thường / Trung Bình / Cao Cấp -->
+                <div class="grid grid-cols-4 gap-1 mb-2 text-[10px] font-black">
+                    <button class="seed-select-tab active py-1 rounded-lg bg-emerald-700 text-white shadow-xs" data-filter="all">Tất Cả (15)</button>
+                    <button class="seed-select-tab py-1 rounded-lg bg-white border border-slate-300 text-slate-700" data-filter="normal">Thường</button>
+                    <button class="seed-select-tab py-1 rounded-lg bg-white border border-slate-300 text-slate-700" data-filter="medium">Trung Bình</button>
+                    <button class="seed-select-tab py-1 rounded-lg bg-white border border-slate-300 text-slate-700" data-filter="premium">Cao Cấp</button>
+                </div>
+
+                <!-- Danh Sách 15 Loại Hạt Giống -->
+                <div id="seed-select-list" class="overflow-y-auto flex-1 space-y-1.5 pr-0.5">
+                    <!-- Render từ JS -->
+                </div>
+
+                <div class="pt-2 border-t border-[#78350f]/20 mt-2 flex gap-1.5">
+                    <button id="btn-plant-all" class="flex-1 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-black rounded-xl shadow active:scale-95 text-xs">
+                        🌱 Gieo Hết Ô Trống Bằng Hạt Đang Chọn
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL 1E: PHÚ NÔNG - MỞ RỘNG ĐẤT -->
+        <div id="modal-unlock-plot" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-3">
+            <div class="bg-[#c98f52] rounded-2xl p-2 max-w-sm w-full shadow-2xl border-4 border-[#5c3010] animate-scale-up text-xs text-[#4a260a]">
+                <!-- Hàng Header: NPC Phú Nông + Đóng -->
+                <div class="flex items-center justify-between gap-1 mb-1.5">
+                    <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-lg bg-[#efd3a3] border-2 border-[#5c3010] shadow-sm">
+                        <span id="unlock-modal-avatar" class="inline-flex items-center justify-center">
+                            <svg viewBox="37 14 28 41" class="w-5 h-6 flex-shrink-0 drop-shadow-xs" aria-label="Phú Nông">
+                                <!-- Nhân vật NPC Phú Nông tóc cam (chuẩn theo Ảnh 1) -->
+                                <rect x="42" y="38" width="16" height="14" rx="4" fill="#dc2626" stroke="#7f1d1d" stroke-width="1"/>
+                                <rect x="44" y="42" width="12" height="10" rx="2" fill="#1e3a8a"/>
+                                <circle cx="58" cy="26" r="6" fill="#ea580c" stroke="#7c2d12" stroke-width="1"/>
+                                <rect x="41" y="21" width="17" height="16" rx="6" fill="#fde68a" stroke="#92400e" stroke-width="1.2"/>
+                                <path d="M40 27 Q41 16 50 16 Q59 16 59 27 Q54 23 45 25 Z" fill="#ea580c" stroke="#7c2d12" stroke-width="1"/>
+                                <circle cx="46" cy="30" r="1.3" fill="#1e293b"/>
+                                <circle cx="53" cy="30" r="1.3" fill="#1e293b"/>
+                                <circle cx="44" cy="33" r="1.2" fill="#fb7185" opacity="0.8"/>
+                                <circle cx="55" cy="33" r="1.2" fill="#fb7185" opacity="0.8"/>
+                            </svg>
+                        </span>
+                        <span class="font-black text-[11px]" id="unlock-modal-title">Phú Nông • Mở Ô Đất</span>
+                    </div>
+                    <button id="btn-close-unlock-plot" class="w-7 h-7 rounded-lg bg-[#efd3a3] border-2 border-[#5c3010] text-[#5c3010] font-black text-sm flex items-center justify-center active:scale-95">✕</button>
+                </div>
+
+                <!-- Khung 1: Lời thoại Phú Nông -->
+                <div id="unlock-modal-banner" class="bg-[#e8be85] rounded-xl border-2 border-[#784319] p-2.5 mb-2 text-[11px] font-bold leading-relaxed">
+                    Chào Nông Dân! Phú Nông sẽ giúp bạn mở rộng mảnh đất để nhận thêm ô trồng cây và tài nguyên thiên nhiên trên đảo!
+                </div>
+
+                <!-- Khung 2: Điều Kiện Mở Đất (Requirements + Timer) -->
+                <div class="bg-[#d7a066] rounded-xl border-2 border-[#5c3010] p-2 mb-2">
+                    <div class="flex items-center justify-between mb-1.5">
+                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-[#efd3a3] border-2 border-[#5c3010] font-black text-[10.5px]">
+                            <span>🧰</span><span>Điều Kiện</span>
+                        </span>
+                        <span id="unlock-build-time" class="text-[10.5px] font-black text-[#4a260a] flex items-center gap-1">
+                            <span>⏱️</span><span>Mở ngay</span>
+                        </span>
+                    </div>
+                    <div id="unlock-requirements-list" class="space-y-1.5 max-h-40 overflow-y-auto pr-0.5">
+                        <!-- JS render từng điều kiện (Vàng, Gỗ, Đá, Sắt, Quặng...) + Badge số lượng Đang có/Cần -->
+                    </div>
+                </div>
+
+                <!-- Khung 3: Tài Nguyên Nhận Được Khi Mở Ô Đất (Blue pill giống Ảnh 1) -->
+                <div class="bg-[#e8be85] rounded-xl border-2 border-[#5c3010] p-2 mb-2.5">
+                    <div class="inline-block px-2 py-0.5 rounded-md bg-sky-600 text-white border-2 border-[#1e3a8a] font-black text-[10.5px] mb-1.5 shadow-sm">
+                        🗺️ Tài nguyên nhận được khi mở ô đất
+                    </div>
+                    <div id="unlock-grants-list" class="flex flex-wrap gap-1.5 text-[10.5px] font-black">
+                        <!-- JS render +1 Ô Trồng Cây, +1 Cây Gỗ / Mỏ Đá / Mỏ Sắt / Mỏ Vàng -->
+                    </div>
+                </div>
+
+                <!-- Nút Mở Rộng (Expand) -->
+                <button id="btn-confirm-unlock-plot" class="w-full py-2.5 rounded-xl bg-[#efd3a3] border-2 border-[#5c3010] text-[#4a260a] font-black text-xs shadow active:scale-95 transition">
+                    ⛏️ Mở Rộng Đất (Expand)
+                </button>
+            </div>
+        </div>
+
+        <!-- MODAL 2: Cài Đặt Adsgram & Quản Trị Ví Nạp Tiền -->
+        <div id="modal-settings" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl p-5 max-w-sm w-full shadow-2xl border-2 border-slate-300">
+                <div class="flex justify-between items-center mb-3">
+                    <h3 class="text-base font-black text-slate-800">⚙️ Cấu Hình Game & Chủ Sở Hữu</h3>
+                    <button id="btn-close-settings" class="text-slate-400 hover:text-slate-600 text-lg font-black">✕</button>
+                </div>
+                
+                <div class="space-y-3 text-xs">
+                    <div class="p-3 bg-gradient-to-r from-pink-50 to-sky-50 rounded-2xl border-2 border-pink-200">
+                        <div class="font-black text-pink-900 mb-1">💼 Khu Vực Chủ Game (Nhận Tiền Nạp)</div>
+                        <p class="text-[10.5px] text-slate-600 mb-2">Cài đặt MoMo, ZaloPay &amp; Ngân Hàng nhận tiền của bạn và duyệt cộng VND cho người chơi.</p>
+                        <button id="btn-open-admin-topup" class="w-full py-2 bg-gradient-to-r from-pink-600 to-sky-600 text-white font-black rounded-xl shadow active:scale-95 text-xs">
+                            🔐 Mở Quản Trị MoMo / ZaloPay / Ngân Hàng
+                        </button>
+                    </div>
+
+                    <div>
+                        <label class="font-bold text-slate-700 block mb-1">💎 Mã Vùng Quảng Cáo Monetag (Zone ID):</label>
+                        <input type="text" id="setting-monetag-zone-id" placeholder="VD: 1234567 (Lấy tại dashboard monetag.com)" class="w-full px-3 py-2 border border-slate-300 rounded-xl font-mono text-xs focus:border-emerald-500">
+                        <p class="text-[10px] text-slate-500 mt-1">Lấy mã Zone ID tại dashboard <b>monetag.com</b> (mục Zones / Rewarded Interstitial Tag).</p>
+                    </div>
+
+                    <div class="p-2.5 bg-sky-50 rounded-xl border border-sky-200 text-[11px] text-sky-900 leading-relaxed">
+                        <b>Trạng thái Monetag:</b> <span id="monetag-status-badge" class="font-bold text-emerald-600">Đang hoạt động (Bảo vệ chống gian lận &amp; Chặn link ngoài)</span>
+                    </div>
+
+                    <div class="flex gap-2 pt-2">
+                        <button id="btn-save-settings" class="flex-1 py-2 bg-emerald-600 text-white font-bold rounded-xl active:scale-95">Lưu Cấu Hình Monetag</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL 2B: NẠP TIỀN NGƯỜI CHƠI (MOMO, ZALOPAY & NGÂN HÀNG - CHỈ NẠP VND) -->
+        <div id="modal-topup" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-3">
+            <div class="bg-gradient-to-b from-pink-50 via-white to-sky-50 rounded-3xl p-4 max-w-sm w-full max-h-[90vh] overflow-y-auto shadow-2xl border-4 border-pink-400 animate-scale-up text-xs">
+                <div class="flex justify-between items-center border-b border-pink-200 pb-2 mb-2.5">
+                    <h3 class="text-base font-black text-pink-950">💳 Nạp VND (MoMo / ZaloPay / Ngân Hàng)</h3>
+                    <button id="btn-close-topup" class="text-slate-400 hover:text-slate-700 font-black text-lg">✕</button>
+                </div>
+
+                <!-- BƯỚC 1: CHỌN KÊNH & MỨC NẠP VND -->
+                <div id="topup-step-select" class="space-y-3">
+                    <div>
+                        <div class="text-[11px] font-black text-slate-700 mb-1.5">1. Chọn hình thức nạp:</div>
+                        <div class="grid grid-cols-3 gap-1.5">
+                            <button id="btn-topup-method-momo" class="topup-method-btn active p-2 rounded-2xl border-2 border-pink-500 bg-pink-50 text-pink-900 font-black flex flex-col items-center justify-center gap-1 shadow-sm transition active:scale-95" data-method="momo">
+                                <span class="w-6 h-6 rounded-lg bg-[#a50064] text-white flex items-center justify-center text-[10px] font-black">M</span>
+                                <span class="text-[10.5px]">MoMo</span>
+                            </button>
+                            <button id="btn-topup-method-zalopay" class="topup-method-btn p-2 rounded-2xl border-2 border-slate-200 bg-white text-slate-700 font-black flex flex-col items-center justify-center gap-1 transition active:scale-95" data-method="zalopay">
+                                <span class="w-6 h-6 rounded-lg bg-[#0068ff] text-white flex items-center justify-center text-[10px] font-black">Z</span>
+                                <span class="text-[10.5px]">ZaloPay</span>
+                            </button>
+                            <button id="btn-topup-method-bank" class="topup-method-btn p-2 rounded-2xl border-2 border-slate-200 bg-white text-slate-700 font-black flex flex-col items-center justify-center gap-1 transition active:scale-95" data-method="bank">
+                                <span class="w-6 h-6 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-[11px] font-black">🏦</span>
+                                <span class="text-[10.5px]">Ngân Hàng</span>
+                            </button>
+                        </div>
+                        <div id="topup-method-hint" class="text-[10.5px] text-slate-600 mt-1.5 bg-white/80 px-2.5 py-1.5 rounded-xl border border-slate-200">
+                            Đang kiểm tra thông tin nhận tiền...
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="text-[11px] font-black text-slate-700 mb-1">2. Chọn gói hoặc nhập số tiền nạp 💵 VND:</div>
+                        <div class="text-[10px] font-bold text-emerald-700 mb-1.5 bg-emerald-50 border border-emerald-200 rounded-xl px-2 py-1">
+                            💡 Tỉ lệ nạp: <b>Dưới 100.000đ = 1:1</b> • <b>Trên 100.000đ = 1:1,1 (+10%)</b>
+                        </div>
+                        <div class="bg-white border-2 border-emerald-300 rounded-2xl p-2 mb-2 space-y-1.5">
+                            <div class="flex items-center justify-between text-[10.5px]">
+                                <span class="font-bold text-slate-700">Nhập số tiền tùy chọn (từ 10.000đ):</span>
+                                <span id="topup-custom-preview" class="font-black text-emerald-700">+50,000đ VND (1:1)</span>
+                            </div>
+                            <div class="flex gap-1.5">
+                                <input type="number" id="topup-custom-amount" min="10000" step="10000" value="50000" placeholder="VD: 150000" class="flex-1 min-w-0 px-2.5 py-1.5 rounded-xl border border-slate-300 font-black text-xs text-slate-900 focus:outline-none focus:border-emerald-500">
+                                <button id="btn-topup-custom" class="px-3 py-1.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-black rounded-xl shadow active:scale-95 text-[11px] flex-shrink-0">
+                                    Tạo Đơn Nạp
+                                </button>
+                            </div>
+                        </div>
+                        <div id="topup-packs-list" class="space-y-2">
+                            <!-- JS render các gói nạp -->
+                        </div>
+                    </div>
+
+                    <div class="border-t border-slate-200 pt-2">
+                        <div class="flex justify-between items-center mb-1.5">
+                            <span class="text-[11px] font-black text-slate-700">📜 Lịch sử đơn nạp của bạn:</span>
+                            <button id="btn-topup-refresh-history" class="text-[10px] font-black text-sky-700 bg-sky-100 px-2 py-0.5 rounded-lg active:scale-95">🔄 Cập nhật</button>
+                        </div>
+                        <div id="topup-my-orders" class="space-y-1.5 max-h-36 overflow-y-auto pr-1">
+                            <!-- JS render lịch sử đơn -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BƯỚC 2: THANH TOÁN ĐƠN HÀNG -->
+                <div id="topup-step-checkout" class="hidden space-y-2.5">
+                    <button id="btn-topup-back" class="text-[11px] font-black text-slate-600 hover:text-slate-900 flex items-center gap-1">
+                        ← Chọn gói / ví khác
+                    </button>
+
+                    <div class="bg-white rounded-2xl p-2.5 border-2 border-amber-300 shadow-sm space-y-1">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-slate-500">Mã đơn:</span>
+                            <span id="checkout-order-id" class="font-mono font-black text-rose-600">NAP...</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-slate-500">Gói nạp:</span>
+                            <span id="checkout-pack-name" class="font-black text-slate-800">Gói Nông Phú</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-slate-500">Kênh thanh toán:</span>
+                            <span id="checkout-method-badge" class="font-black text-pink-700">Ví MoMo</span>
+                        </div>
+                        <div class="flex justify-between items-center border-t border-slate-100 pt-1">
+                            <span class="font-bold text-slate-700">Số tiền cần chuyển:</span>
+                            <span id="checkout-amount" class="text-base font-black text-emerald-700">50,000đ</span>
+                        </div>
+                    </div>
+
+                    <!-- Nếu dùng Cổng Thanh Toán Merchant API tự động -->
+                    <div id="checkout-gateway-box" class="hidden bg-sky-50 border-2 border-sky-300 rounded-2xl p-3 text-center space-y-2">
+                        <div class="font-black text-sky-900">⚡ Cổng Thanh Toán Tự Động (Xác nhận tức thì)</div>
+                        <a id="btn-open-gateway-pay" href="#" target="_blank" rel="noopener noreferrer" class="block w-full py-2.5 bg-gradient-to-r from-pink-600 to-sky-600 text-white font-black rounded-xl shadow active:scale-95">
+                            🚀 Mở Trang Thanh Toán Ngay
+                        </a>
+                        <div class="text-[10px] text-slate-600">Sau khi thanh toán thành công trên app, hệ thống tự cộng quà trong vài giây.</div>
+                    </div>
+
+                    <!-- Nếu dùng Ví Cá Nhân (Chủ game nhận 100% qua SĐT / QR) -->
+                    <div id="checkout-personal-box" class="bg-white rounded-2xl p-3 border-2 border-pink-200 space-y-2.5 text-center">
+                        <div id="checkout-qr-wrap" class="flex flex-col items-center">
+                            <img id="checkout-qr-img" src="" alt="QR Thanh Toán" class="w-44 h-44 object-contain rounded-xl border border-slate-200 bg-white p-1 shadow-sm hidden">
+                            <div id="checkout-qr-fallback" class="text-[11px] font-bold text-amber-800 bg-amber-50 border border-amber-200 rounded-xl p-2 w-full">
+                                Mở app và chuyển khoản chính xác theo thông tin bên dưới:
+                            </div>
+                        </div>
+
+                        <a id="btn-open-momo-app" href="#" target="_blank" rel="noopener noreferrer" class="hidden block w-full py-2 bg-[#a50064] text-white font-black rounded-xl shadow active:scale-95">
+                            🟣 Mở App MoMo Điền Sẵn Số Tiền
+                        </a>
+
+                        <div class="bg-slate-50 rounded-xl p-2 border border-slate-200 text-left space-y-1.5 text-[11px]">
+                            <div id="checkout-receiver-bank-row" class="hidden">
+                                <div class="text-[9.5px] text-slate-500 font-bold">Ngân hàng nhận:</div>
+                                <div id="checkout-receiver-bank" class="font-black text-emerald-900">Ngân Hàng</div>
+                            </div>
+                            <div class="flex justify-between items-center gap-1">
+                                <div>
+                                    <div class="text-[9.5px] text-slate-500 font-bold">SĐT / Số tài khoản nhận:</div>
+                                    <div id="checkout-receiver-phone" class="font-black text-slate-900 font-mono">09...</div>
+                                </div>
+                                <button id="btn-copy-phone" class="px-2 py-1 bg-slate-200 hover:bg-slate-300 rounded-lg font-black text-[10px]">Copy</button>
+                            </div>
+                            <div>
+                                <div class="text-[9.5px] text-slate-500 font-bold">Tên chủ tài khoản nhận:</div>
+                                <div id="checkout-receiver-name" class="font-black text-emerald-800">CHỦ GAME</div>
+                            </div>
+                            <div class="flex justify-between items-center gap-1">
+                                <div>
+                                    <div class="text-[9.5px] text-slate-500 font-bold">Số tiền chính xác:</div>
+                                    <div id="checkout-copy-amount-val" class="font-black text-rose-600">50000</div>
+                                </div>
+                                <button id="btn-copy-amount" class="px-2 py-1 bg-slate-200 hover:bg-slate-300 rounded-lg font-black text-[10px]">Copy</button>
+                            </div>
+                            <div class="flex justify-between items-center gap-1 bg-yellow-50 p-1.5 rounded-lg border border-yellow-300">
+                                <div>
+                                    <div class="text-[9.5px] text-amber-800 font-bold">Nội dung chuyển khoản (BẮT BUỘC):</div>
+                                    <div id="checkout-transfer-note" class="font-mono font-black text-amber-950 text-xs">NAP123456</div>
+                                </div>
+                                <button id="btn-copy-note" class="px-2 py-1 bg-amber-400 hover:bg-amber-300 text-slate-950 rounded-lg font-black text-[10px]">Copy</button>
+                            </div>
+                        </div>
+
+                        <p id="checkout-instructions" class="text-[10px] text-slate-500 leading-relaxed">
+                            Quét mã QR hoặc chuyển khoản đúng nội dung để chủ game xác nhận cộng VND.
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2">
+                        <button id="btn-topup-transferred" class="py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-black rounded-xl shadow border-b-2 border-teal-800 active:scale-95">
+                            ✅ Đã Chuyển Tiền
+                        </button>
+                        <button id="btn-topup-check-status" class="py-2.5 bg-amber-400 text-slate-950 font-black rounded-xl shadow border-b-2 border-amber-600 active:scale-95">
+                            🔄 Kiểm Tra Quà
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL 2C: QUẢN TRỊ CHỦ GAME (CÀI VÍ MOMO/ZALOPAY/NGÂN HÀNG & DUYỆT ĐƠN NẠP) -->
+        <div id="modal-admin-topup" class="hidden fixed inset-0 z-[90] bg-black/80 backdrop-blur-sm flex items-center justify-center p-3">
+            <div class="bg-white rounded-3xl p-4 max-w-md w-full max-h-[92vh] overflow-y-auto shadow-2xl border-4 border-slate-700 text-xs">
+                <div class="flex justify-between items-center border-b border-slate-200 pb-2 mb-3">
+                    <h3 class="text-base font-black text-slate-900">👑 Quản Trị Nhận Tiền (Chủ Game)</h3>
+                    <button id="btn-close-admin-topup" class="text-slate-400 hover:text-slate-700 font-black text-lg">✕</button>
+                </div>
+
+                <!-- Màn hình nhập PIN -->
+                <div id="admin-auth-box" class="space-y-3 py-2">
+                    <div class="bg-amber-50 border border-amber-300 rounded-2xl p-2.5 text-[11px] text-amber-900">
+                        Nhập <b>Mã PIN Chủ Game</b> để cài đặt MoMo, ZaloPay &amp; Ngân Hàng nhận tiền và duyệt cộng VND cho người chơi. (Mã PIN mặc định ban đầu: <code class="font-mono font-black bg-amber-200 px-1 rounded">123456</code> — hãy đổi ngay bên trong!)
+                    </div>
+                    <input type="password" id="admin-pin-input" placeholder="Nhập mã PIN..." class="w-full px-3 py-2.5 border-2 border-slate-300 rounded-xl font-mono text-sm font-bold focus:border-pink-600">
+                    <button id="btn-admin-login" class="w-full py-2.5 bg-slate-900 text-white font-black rounded-xl active:scale-95">
+                        🔓 Mở Bảng Quản Trị
+                    </button>
+                </div>
+
+                <!-- Bảng quản trị sau khi mở khóa -->
+                <div id="admin-dashboard-box" class="hidden space-y-3">
+                    <div id="admin-pin-warning" class="hidden bg-rose-50 border border-rose-300 text-rose-800 rounded-xl p-2 text-[10.5px] font-bold">
+                        ⚠️ Bạn đang dùng mã PIN mặc định (123456). Vui lòng vào tab <b>Cấu Hình Ví</b> để đổi PIN bảo mật!
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-1.5 text-center">
+                        <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-2">
+                            <div class="text-[9.5px] text-emerald-700 font-bold">Tiền Nạp MoMo/Zalo</div>
+                            <div id="admin-stat-revenue" class="font-black text-emerald-900 text-xs">0đ</div>
+                        </div>
+                        <div class="bg-amber-50 border border-amber-200 rounded-xl p-2">
+                            <div class="text-[9.5px] text-amber-700 font-bold">Đơn Nạp Chờ</div>
+                            <div id="admin-stat-pending" class="font-black text-amber-900 text-xs">0 đơn</div>
+                        </div>
+                        <div class="bg-sky-50 border border-sky-200 rounded-xl p-2">
+                            <div class="text-[9.5px] text-sky-700 font-bold">Đơn Đã Duyệt</div>
+                            <div id="admin-stat-approved" class="font-black text-sky-900 text-xs">0 đơn</div>
+                        </div>
+                    </div>
+
+                    <!-- Thống kê Quỹ Phí Chênh Lệch Chợ P2P (20% Thường / 12,5% VIP) -->
+                    <div class="bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-200 rounded-2xl p-2.5 text-[10.5px] space-y-1">
+                        <div class="flex justify-between items-center font-black text-indigo-950">
+                            <span>🏦 Phí Chênh Lệch Chợ P2P (20% / VIP 12,5%):</span>
+                            <span id="admin-stat-market-fee" class="text-sm text-rose-600">0đ</span>
+                        </div>
+                        <div class="flex justify-between text-slate-600 font-bold">
+                            <span>Tổng khối lượng mua bán P2P:</span>
+                            <span><b id="admin-stat-market-volume">0đ</b> (<b id="admin-stat-market-trades">0</b> đơn)</span>
+                        </div>
+                        <div class="text-[9.5px] text-indigo-800 leading-snug pt-0.5 border-t border-indigo-200/70">
+                            💡 <b>Cách tiền thật về ví bạn:</b> Khi người mua nạp tiền qua MoMo/ZaloPay, 100% tiền thật vào thẳng ví bạn. Khi họ mua hàng P2P, sàn giữ lại <b>20% phí chênh lệch</b> (hoặc <b>12,5%</b> nếu người bán kích hoạt VIP) — phần phí giữ lại + phần chênh nạp chính là lãi ròng trong MoMo/ZaloPay của bạn!
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-1.5 bg-slate-100 p-1 rounded-xl font-black">
+                        <button class="admin-tab-btn py-1.5 rounded-lg bg-white text-slate-900 shadow-sm" data-admin-tab="orders">📋 Duyệt Đơn Nạp</button>
+                        <button class="admin-tab-btn py-1.5 rounded-lg text-slate-600" data-admin-tab="config">💳 Cấu Hình Ví</button>
+                    </div>
+
+                    <!-- TAB 1: DANH SÁCH ĐƠN & DUYỆT -->
+                    <div id="admin-tab-orders" class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-slate-600">Đối chiếu app MoMo/ZaloPay đúng mã NAP rồi bấm Duyệt:</span>
+                            <button id="btn-admin-refresh-orders" class="px-2 py-1 bg-slate-200 rounded-lg font-black text-[10px] active:scale-95">🔄 Tải lại</button>
+                        </div>
+                        <div id="admin-orders-list" class="space-y-2 max-h-72 overflow-y-auto pr-1">
+                            <!-- JS render đơn hàng -->
+                        </div>
+                    </div>
+
+                    <!-- TAB 2: CẤU HÌNH VÍ NHẬN TIỀN & MERCHANT API -->
+                    <div id="admin-tab-config" class="hidden space-y-3">
+                        <!-- MoMo Cá Nhân -->
+                        <div class="bg-pink-50/70 border border-pink-200 rounded-2xl p-2.5 space-y-1.5">
+                            <div class="font-black text-pink-900">🟣 Ví MoMo Nhận Tiền Của Bạn</div>
+                            <input type="text" id="admin-momo-phone" placeholder="SĐT Ví MoMo nhận tiền (VD: 0912345678)" class="w-full px-2.5 py-1.5 border border-pink-200 rounded-lg font-bold">
+                            <input type="text" id="admin-momo-name" placeholder="Tên chủ tài khoản MoMo (VD: NGUYEN VAN A)" class="w-full px-2.5 py-1.5 border border-pink-200 rounded-lg font-bold">
+                            <div class="flex items-center justify-between gap-2 pt-1">
+                                <label class="text-[10.5px] font-bold text-pink-900 cursor-pointer bg-white px-2.5 py-1 rounded-lg border border-pink-300">
+                                    📷 Tải ảnh QR MoMo (tùy chọn)
+                                    <input type="file" id="admin-momo-qr-file" accept="image/*" class="hidden">
+                                </label>
+                                <button id="btn-clear-momo-qr" class="text-[10px] text-rose-600 font-bold hidden">Xóa QR</button>
+                            </div>
+                            <img id="admin-momo-qr-preview" class="hidden w-24 h-24 object-contain rounded-lg border border-pink-300 bg-white mt-1">
+                        </div>
+
+                        <!-- ZaloPay Cá Nhân -->
+                        <div class="bg-sky-50/70 border border-sky-200 rounded-2xl p-2.5 space-y-1.5">
+                            <div class="font-black text-sky-900">🔵 Ví ZaloPay Nhận Tiền Của Bạn</div>
+                            <input type="text" id="admin-zalopay-phone" placeholder="SĐT Ví ZaloPay nhận tiền (VD: 0912345678)" class="w-full px-2.5 py-1.5 border border-sky-200 rounded-lg font-bold">
+                            <input type="text" id="admin-zalopay-name" placeholder="Tên chủ tài khoản ZaloPay" class="w-full px-2.5 py-1.5 border border-sky-200 rounded-lg font-bold">
+                            <div class="flex items-center justify-between gap-2 pt-1">
+                                <label class="text-[10.5px] font-bold text-sky-900 cursor-pointer bg-white px-2.5 py-1 rounded-lg border border-sky-300">
+                                    📷 Tải ảnh QR Nhận Tiền ZaloPay
+                                    <input type="file" id="admin-zalopay-qr-file" accept="image/*" class="hidden">
+                                </label>
+                                <button id="btn-clear-zalopay-qr" class="text-[10px] text-rose-600 font-bold hidden">Xóa QR</button>
+                            </div>
+                            <p class="text-[9.5px] text-slate-500">Mẹo: Vào ZaloPay -> Nhận tiền -> Lưu QR rồi tải lên đây để người chơi quét trực tiếp.</p>
+                            <img id="admin-zalopay-qr-preview" class="hidden w-24 h-24 object-contain rounded-lg border border-sky-300 bg-white mt-1">
+                        </div>
+
+                        <!-- Ngân Hàng Cá Nhân -->
+                        <div class="bg-emerald-50/70 border border-emerald-200 rounded-2xl p-2.5 space-y-1.5">
+                            <div class="font-black text-emerald-900">🏦 Tài Khoản Ngân Hàng Nhận Tiền</div>
+                            <input type="text" id="admin-bank-bankname" placeholder="Tên ngân hàng (VD: Vietcombank, MB Bank, Techcombank)" class="w-full px-2.5 py-1.5 border border-emerald-200 rounded-lg font-bold">
+                            <input type="text" id="admin-bank-phone" placeholder="Số tài khoản ngân hàng nhận tiền" class="w-full px-2.5 py-1.5 border border-emerald-200 rounded-lg font-bold">
+                            <input type="text" id="admin-bank-name" placeholder="Tên chủ tài khoản (VD: NGUYEN VAN A)" class="w-full px-2.5 py-1.5 border border-emerald-200 rounded-lg font-bold">
+                            <div class="flex items-center justify-between gap-2 pt-1">
+                                <label class="text-[10.5px] font-bold text-emerald-900 cursor-pointer bg-white px-2.5 py-1 rounded-lg border border-emerald-300">
+                                    📷 Tải ảnh QR Ngân Hàng (tùy chọn)
+                                    <input type="file" id="admin-bank-qr-file" accept="image/*" class="hidden">
+                                </label>
+                                <button id="btn-clear-bank-qr" class="text-[10px] text-rose-600 font-bold hidden">Xóa QR</button>
+                            </div>
+                            <img id="admin-bank-qr-preview" class="hidden w-24 h-24 object-contain rounded-lg border border-emerald-300 bg-white mt-1">
+                        </div>
+
+                        <!-- Merchant API Tự Động (Dành cho Doanh nghiệp / Đã đăng ký API) -->
+                        <details class="bg-slate-50 border border-slate-200 rounded-2xl p-2.5">
+                            <summary class="font-black text-slate-700 cursor-pointer">⚡ Nâng cao: API Tự Động MoMo / ZaloPay Merchant</summary>
+                            <div class="space-y-2 mt-2 pt-2 border-t border-slate-200 text-[11px]">
+                                <input type="text" id="admin-public-url" placeholder="Domain HTTPS của server (VD: https://gamecuaban.com)" class="w-full px-2 py-1 border rounded-lg">
+                                <div class="font-bold text-pink-900">MoMo Business API v2:</div>
+                                <div class="flex gap-3">
+                                    <label class="flex items-center gap-1"><input type="checkbox" id="admin-momo-gw-enabled"> Bật MoMo API</label>
+                                    <label class="flex items-center gap-1"><input type="checkbox" id="admin-momo-sandbox" checked> Sandbox</label>
+                                </div>
+                                <input type="text" id="admin-momo-partner" placeholder="Partner Code" class="w-full px-2 py-1 border rounded-lg font-mono">
+                                <input type="text" id="admin-momo-access" placeholder="Access Key" class="w-full px-2 py-1 border rounded-lg font-mono">
+                                <input type="password" id="admin-momo-secret" placeholder="Secret Key" class="w-full px-2 py-1 border rounded-lg font-mono">
+
+                                <div class="font-bold text-sky-900 pt-1">ZaloPay Merchant API v2:</div>
+                                <div class="flex gap-3">
+                                    <label class="flex items-center gap-1"><input type="checkbox" id="admin-zalopay-gw-enabled"> Bật ZaloPay API</label>
+                                    <label class="flex items-center gap-1"><input type="checkbox" id="admin-zalopay-sandbox" checked> Sandbox</label>
+                                </div>
+                                <input type="text" id="admin-zalopay-appid" placeholder="App ID" class="w-full px-2 py-1 border rounded-lg font-mono">
+                                <input type="password" id="admin-zalopay-key1" placeholder="Key1 (Mac tạo đơn)" class="w-full px-2 py-1 border rounded-lg font-mono">
+                                <input type="password" id="admin-zalopay-key2" placeholder="Key2 (Callback xác thực)" class="w-full px-2 py-1 border rounded-lg font-mono">
+                            </div>
+                        </details>
+
+                        <!-- Bảo mật quyền Chủ Game (Chỉ 1 chủ game truy cập Cài Đặt) -->
+                        <div class="bg-emerald-50/80 border border-emerald-200 rounded-2xl p-2.5 space-y-1.5">
+                            <div class="font-black text-emerald-950">🛡️ Quyền Chủ Game (Bảo Mật Cài Đặt)</div>
+                            <div class="flex items-center justify-between gap-2 text-[10.5px]">
+                                <span id="admin-owner-account-badge" class="font-bold text-emerald-800">Chủ sở hữu: Chưa gắn tài khoản</span>
+                                <button type="button" id="btn-admin-bind-owner" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-lg text-[10px] active:scale-95">
+                                    👑 Gắn TK Này Làm Chủ
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Đổi Mã PIN Admin Bắt Buộc Xác Thực Mã Cũ + Nhập 2 Lần Mã Mới -->
+                        <div class="bg-amber-50/70 border border-amber-200 rounded-2xl p-2.5 space-y-1.5">
+                            <div class="font-black text-amber-950">🔐 Đổi Mã PIN Admin (Bắt buộc nhập mã cũ &amp; xác minh 2 lần)</div>
+                            <input type="password" id="admin-old-pin" placeholder="Nhập Mã PIN Admin CŨ hiện tại..." class="w-full px-2.5 py-1.5 border border-amber-300 rounded-lg font-mono bg-white">
+                            <input type="password" id="admin-new-pin" placeholder="Nhập Mã PIN Admin MỚI (tối thiểu 4 ký tự)..." class="w-full px-2.5 py-1.5 border border-amber-300 rounded-lg font-mono bg-white">
+                            <input type="password" id="admin-confirm-new-pin" placeholder="Nhập lại Mã PIN Admin MỚI lần 2 để xác minh..." class="w-full px-2.5 py-1.5 border border-amber-300 rounded-lg font-mono bg-white">
+                        </div>
+
+                        <button id="btn-admin-save-config" class="w-full py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-black rounded-xl shadow active:scale-95">
+                            💾 Lưu Thông Tin Ví Nhận Tiền
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL TÀI KHOẢN & ĐĂNG XUẤT (Mở khi bấm vào hình LV góc trên trái) -->
+        <div id="modal-account-menu" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl w-full max-w-xs border-4 border-emerald-600 shadow-2xl overflow-hidden text-slate-800">
+                <div class="bg-gradient-to-r from-emerald-700 to-teal-600 p-3 flex justify-between items-center text-white">
+                    <h3 class="font-black text-sm">👤 Tài Khoản Người Chơi</h3>
+                    <button id="btn-close-account-menu" class="text-white hover:text-red-200 font-black px-2 py-0.5 bg-white/10 rounded-full">✕</button>
+                </div>
+                <div class="p-4 space-y-3 text-xs">
+                    <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-3 flex items-center gap-3">
+                        <div class="w-11 h-11 rounded-full bg-gradient-to-tr from-amber-500 to-yellow-300 border-2 border-amber-700 flex items-center justify-center font-black text-slate-900 text-base shadow">
+                            <span id="account-menu-lv">1</span>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <div class="font-black text-slate-900 text-sm truncate" id="account-menu-displayname">Nông Dân</div>
+                            <div class="text-[11px] font-mono text-emerald-700 truncate" id="account-menu-username">@player</div>
+                            <div class="text-[10px] text-amber-700 font-bold mt-0.5 truncate" id="account-menu-exp">EXP: 0 / 100</div>
+                        </div>
+                    </div>
+                    <button type="button" id="btn-logout-account" class="w-full py-2.5 bg-rose-600 hover:bg-rose-500 text-white font-black rounded-xl shadow active:scale-95 transition">
+                        🚪 Đăng Xuất Tài Khoản
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL CỔNG XÁC MINH CỘNG ĐỒNG TELEGRAM BẮT BUỘC -->
+        <div id="modal-community-gate" class="hidden fixed inset-0 z-[85] bg-emerald-950/95 backdrop-blur-sm flex items-center justify-center p-3 select-none overflow-y-auto">
+            <div class="bg-[#fbf7ee] rounded-3xl w-full max-w-sm border-4 border-[#245e3f] shadow-2xl overflow-hidden text-slate-800 my-auto">
+                <!-- Banner phía trên chuẩn giao diện -->
+                <div class="relative bg-gradient-to-b from-[#1b4e33] to-[#245e3f] p-4 text-center text-white border-b-2 border-amber-400/30 overflow-hidden">
+                    <div class="absolute -right-6 -bottom-6 text-7xl opacity-15 select-none pointer-events-none">🌾🐓</div>
+                    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400/20 text-amber-200 text-[11px] font-black tracking-wide border border-amber-300/30 mb-2">
+                        <span>✨</span> <span>FARM HAPPY TELEGRAM</span>
+                    </div>
+                    <h2 class="font-black text-lg text-amber-300 drop-shadow leading-tight">
+                        Tham gia cộng đồng<br>để vào nông trại
+                    </h2>
+                    <p class="text-[11px] text-emerald-100 font-medium mt-1.5 leading-snug px-2">
+                        Tham gia đủ 1 kênh thông báo và 1 nhóm chat để mở trải nghiệm FARM HAPPY.
+                    </p>
+                </div>
+
+                <!-- Thân modal -->
+                <div class="p-4 space-y-3.5 text-xs">
+                    <p class="text-center text-[12px] text-slate-700 font-bold leading-snug">
+                        Bấm <span class="text-sky-600 font-black">Tham gia</span> tại từng nơi, sau đó quay lại đây và chọn <span class="text-emerald-700 font-black">Xác nhận đã tham gia</span>.
+                    </p>
+
+                    <!-- Danh sách kênh / nhóm -->
+                    <div class="space-y-2.5">
+                        <!-- Kênh thông báo -->
+                        <div id="gate-item-channel" class="bg-white border-2 border-slate-200 rounded-2xl p-3 flex items-center justify-between gap-3 shadow-sm transition hover:border-sky-400">
+                            <div class="flex items-center gap-2.5 min-w-0">
+                                <div class="w-11 h-11 rounded-xl bg-[#24A1DE] text-white flex items-center justify-center text-xl shadow flex-shrink-0">
+                                    ✈️
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="font-black text-slate-900 text-xs truncate">Kênh thông báo</div>
+                                    <div class="text-[11px] text-sky-600 font-bold font-mono truncate">@thongbaofarmhappy</div>
+                                </div>
+                            </div>
+                            <button type="button" id="btn-gate-join-channel" class="flex-shrink-0 px-3.5 py-2 bg-[#24A1DE] hover:bg-[#1f8ec4] text-white font-black text-xs rounded-xl shadow active:scale-95 transition flex items-center gap-1">
+                                <span>Tham gia</span>
+                            </button>
+                        </div>
+
+                        <!-- Nhóm chat trao đổi -->
+                        <div id="gate-item-group" class="bg-white border-2 border-slate-200 rounded-2xl p-3 flex items-center justify-between gap-3 shadow-sm transition hover:border-emerald-400">
+                            <div class="flex items-center gap-2.5 min-w-0">
+                                <div class="w-11 h-11 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-xl shadow flex-shrink-0">
+                                    👥
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="font-black text-slate-900 text-xs truncate">Nhóm chat trao đổi</div>
+                                    <div class="text-[11px] text-emerald-700 font-bold font-mono truncate">@nhomchatfarmhappy</div>
+                                </div>
+                            </div>
+                            <button type="button" id="btn-gate-join-group" class="flex-shrink-0 px-3.5 py-2 bg-[#24A1DE] hover:bg-[#1f8ec4] text-white font-black text-xs rounded-xl shadow active:scale-95 transition flex items-center gap-1">
+                                <span>Tham gia</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Nút xác nhận to màu xanh lá y như ảnh -->
+                    <button type="button" id="btn-gate-confirm" class="w-full py-3.5 px-4 bg-gradient-to-b from-[#48c962] to-[#2ea847] border-b-4 border-[#228036] hover:brightness-105 active:scale-95 text-white font-black text-sm rounded-2xl shadow-lg transition flex items-center justify-center gap-2">
+                        <span class="text-base font-black">✓</span> <span>Xác nhận đã tham gia</span>
+                    </button>
+
+                    <!-- Chú thích chân trang -->
+                    <div class="text-center space-y-1 text-[11px] text-slate-500 pt-1">
+                        <div>Hệ thống sẽ kiểm tra cả hai nơi qua Telegram.</div>
+                        <div class="text-[10px] text-slate-400">Nếu gặp vấn đề khi xác nhận, vui lòng liên hệ hỗ trợ.</div>
+                    </div>
+
+                    <!-- Nút chuyển sang Đăng nhập nếu đã có nick -->
+                    <div class="pt-2 border-t border-slate-200/80 text-center">
+                        <button type="button" id="btn-gate-switch-login" class="text-emerald-800 hover:text-emerald-950 font-black text-xs underline decoration-dotted py-1 transition inline-flex items-center gap-1">
+                            <span>🔑</span> <span>Đã có tài khoản? Đăng nhập ngay</span>
+                        </button>
+                    </div>
+
+                    <!-- Footer logo / text -->
+                    <div class="text-center text-[10px] font-bold text-amber-800/70 tracking-widest uppercase pt-1">
+                        🌾 FARM HAPPY - NÔNG TRẠI VUI VẺ 🌾
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL ĐĂNG KÝ / ĐĂNG NHẬP BẮT BUỘC (Khóa toàn màn hình khi chưa có tài khoản) -->
+        <div id="modal-auth" class="fixed inset-0 z-[80] bg-emerald-950/95 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl w-full max-w-sm border-4 border-amber-500 shadow-2xl overflow-hidden text-slate-800">
+                <div class="bg-gradient-to-r from-emerald-700 via-teal-600 to-emerald-800 p-4 text-center text-white">
+                    <div class="text-2xl mb-1">🌾🎣</div>
+                    <h2 class="font-black text-base tracking-wide">Nông Trại &amp; Câu Cá May Mắn</h2>
+                    <p class="text-[11px] text-emerald-100 mt-0.5">Tạo tài khoản để lưu vĩnh viễn toàn bộ nông sản, tài nguyên &amp; tài sản của bạn</p>
+                </div>
+                <div class="p-4 space-y-3 text-xs">
+                    <div class="grid grid-cols-2 gap-1.5 bg-slate-100 p-1 rounded-xl font-black">
+                        <button type="button" id="auth-tab-register" class="py-2 rounded-lg bg-emerald-600 text-white shadow transition">✨ Tạo Tài Khoản</button>
+                        <button type="button" id="auth-tab-login" class="py-2 rounded-lg text-slate-600 hover:bg-white transition">🔑 Đăng Nhập</button>
+                    </div>
+
+                    <div id="auth-error-msg" class="hidden bg-rose-50 border border-rose-300 text-rose-700 font-bold text-[11px] rounded-xl px-3 py-2 text-center"></div>
+
+                    <div id="auth-panel-register" class="space-y-2.5">
+                        <div>
+                            <label class="font-bold text-slate-700 block mb-1">Tên đăng nhập (viết liền, không dấu):</label>
+                            <input type="text" id="auth-reg-username" placeholder="VD: nongdan88" autocomplete="username" class="w-full px-3 py-2 border border-slate-300 rounded-xl font-bold focus:outline-none focus:border-emerald-600">
+                        </div>
+                        <div>
+                            <label class="font-bold text-slate-700 block mb-1">Tên hiển thị trong game:</label>
+                            <input type="text" id="auth-reg-displayname" placeholder="VD: Anh Ba Nông Dân" class="w-full px-3 py-2 border border-slate-300 rounded-xl font-bold focus:outline-none focus:border-emerald-600">
+                        </div>
+                        <div>
+                            <label class="font-bold text-slate-700 block mb-1">Mật khẩu (tối thiểu 4 ký tự):</label>
+                            <input type="password" id="auth-reg-password" placeholder="Nhập mật khẩu..." autocomplete="new-password" class="w-full px-3 py-2 border border-slate-300 rounded-xl font-bold focus:outline-none focus:border-emerald-600">
+                        </div>
+                        <div>
+                            <label class="font-bold text-slate-700 block mb-1">Nhập lại mật khẩu:</label>
+                            <input type="password" id="auth-reg-password2" placeholder="Nhập lại mật khẩu..." autocomplete="new-password" class="w-full px-3 py-2 border border-slate-300 rounded-xl font-bold focus:outline-none focus:border-emerald-600">
+                        </div>
+                        <button type="button" id="btn-auth-register" class="w-full py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-sm rounded-xl shadow-md active:scale-95 transition">
+                            🌱 Tạo Tài Khoản &amp; Vào Chơi
+                        </button>
+                    </div>
+
+                    <div id="auth-panel-login" class="hidden space-y-2.5">
+                        <div>
+                            <label class="font-bold text-slate-700 block mb-1">Tên đăng nhập:</label>
+                            <input type="text" id="auth-login-username" placeholder="Nhập tên đăng nhập..." autocomplete="username" class="w-full px-3 py-2 border border-slate-300 rounded-xl font-bold focus:outline-none focus:border-emerald-600">
+                        </div>
+                        <div>
+                            <label class="font-bold text-slate-700 block mb-1">Mật khẩu:</label>
+                            <input type="password" id="auth-login-password" placeholder="Nhập mật khẩu..." autocomplete="current-password" class="w-full px-3 py-2 border border-slate-300 rounded-xl font-bold focus:outline-none focus:border-emerald-600">
+                        </div>
+                        <button type="button" id="btn-auth-login" class="w-full py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-900 font-black text-sm rounded-xl shadow-md active:scale-95 transition">
+                            🔓 Đăng Nhập &amp; Tải Dữ Liệu
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL 3: TRÌNH PHÁT QUẢNG CÁO CÓ THƯỞNG MONETAG (KHÔNG THỂ BỎ QUA • CHẶN LINK NGOÀI • CHỐNG GIAN LẬN) -->
+        <div id="modal-monetag-ad" class="hidden fixed inset-0 z-[150] bg-black/95 backdrop-blur-md flex flex-col items-center justify-center p-6 text-white text-center select-none">
+            <!-- Khung Thẻ Video Quảng Cáo Monetag Bảo Vệ Toàn Diện -->
+            <div class="relative w-full max-w-sm bg-gradient-to-b from-slate-900 via-slate-800 to-slate-950 p-6 rounded-3xl border-2 border-emerald-400 shadow-2xl flex flex-col items-center gap-3 animate-scale-up">
+                <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-500 via-teal-500 to-sky-500 flex items-center justify-center text-3xl shadow-xl shadow-emerald-500/30 animate-pulse">
+                    💎
+                </div>
+                <div>
+                    <span id="monetag-ad-badge" class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-400/40">Quảng Cáo Monetag</span>
+                    <h4 class="text-base font-black text-white mt-1.5 flex items-center justify-center gap-1">
+                        <span>📺</span> <span>Đang Phát Video Đối Tác Monetag</span>
+                    </h4>
+                    <p id="monetag-ad-sub" class="text-[11px] text-slate-300 mt-1 max-w-xs leading-relaxed">
+                        Vui lòng xem hết 15 giây video đối tác Monetag để nhận thưởng (Không thể bỏ qua)
+                    </p>
+                </div>
+                
+                <!-- Thanh tiến trình xem quảng cáo -->
+                <div class="w-full bg-slate-950 h-3 rounded-full overflow-hidden border border-slate-700 mt-1 p-0.5">
+                    <div id="monetag-ad-progress" class="bg-gradient-to-r from-emerald-400 via-teal-300 to-green-500 h-full w-0 rounded-full transition-all duration-300 shadow-sm"></div>
+                </div>
+                
+                <!-- Đồng hồ đếm ngược bắt buộc xem hết -->
+                <div class="flex items-center gap-2 text-xs font-black text-amber-300 bg-amber-950/70 px-3.5 py-1.5 rounded-xl border border-amber-500/50">
+                    <span>⏱️ Hoàn tất sau:</span>
+                    <span id="monetag-ad-timer" class="text-base font-black text-yellow-300">15</span>
+                    <span>giây</span>
+                </div>
+
+                <!-- Thông báo bảo vệ chống gian lận & chặn link ngoài -->
+                <div class="text-[10px] text-emerald-400/80 font-bold flex items-center gap-1 mt-1">
+                    <span>🛡️</span>
+                    <span>Bảo vệ chống gian lận &amp; Chặn link ngoài an toàn</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL POPUP THÔNG BÁO NHẬN VÀNG TỪ QUẢNG CÁO (ẢNH SỐ 2) -->
+        <div id="modal-ad-gold-reward" class="hidden fixed inset-0 z-[110] bg-black/80 backdrop-blur-xs flex items-center justify-center p-4">
+            <div class="relative w-full max-w-xs bg-gradient-to-b from-[#2a1a0f] via-[#1a2f1c] to-[#0c1810] border-2 border-yellow-400 rounded-3xl p-5 text-center text-white shadow-2xl animate-pop-in space-y-3">
+                <div class="text-5xl animate-bounce select-none">💰</div>
+                <div>
+                    <h3 class="text-base font-black text-yellow-300 uppercase tracking-wide">Nhận Vàng Thành Công!</h3>
+                    <p class="text-[11px] text-emerald-200 mt-0.5">Bạn vừa xem xong quảng cáo</p>
+                </div>
+                <div class="py-3 px-4 bg-yellow-400/20 border border-yellow-400/60 rounded-2xl shadow-inner">
+                    <span class="text-xs text-yellow-200 font-bold block">Bạn đã nhận được:</span>
+                    <span id="ad-gold-reward-display" class="text-3xl font-black text-yellow-300 drop-shadow">+1 💰 Vàng</span>
+                </div>
+                <p id="ad-gold-next-info" class="text-[10.5px] text-slate-300 leading-tight">
+                    ⏳ Lần nhận kế tiếp sau 1 giờ • Đã nhận: <b class="text-yellow-300">1/24</b> lượt hôm nay
+                </p>
+                <button type="button" id="btn-close-ad-gold-reward" class="w-full py-2.5 bg-gradient-to-r from-amber-400 to-yellow-400 hover:brightness-110 active:scale-95 text-slate-950 font-black text-sm rounded-xl shadow-lg border border-yellow-200 transition cursor-pointer">
+                    Tuyệt Vời! Nhận Ngay
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="audio.js"></script>
+    <script src="monetag.js"></script>
+    <script src="adsgram.js"></script>
+    <script src="game.js"></script>
+    <script src="payment.js"></script>
+</body>
+</html>

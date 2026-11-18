@@ -1,0 +1,303 @@
+/* Hyper-Detailed 3D/4D Cozy Realistic Game Styles */
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-5px); }
+}
+
+@keyframes pulse-subtle {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.025); }
+}
+
+@keyframes scale-up {
+    0% { transform: scale(0.85); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes pop-float {
+    0% { transform: translateY(0) scale(0.85); opacity: 1; }
+    100% { transform: translateY(-34px) scale(1.15); opacity: 0; }
+}
+
+@keyframes sun-sway {
+    0%, 100% { transform: rotate(-2deg) scale(1); opacity: 0.35; }
+    50% { transform: rotate(2deg) scale(1.05); opacity: 0.55; }
+}
+
+@keyframes butterfly-flight {
+    0% { transform: translate(0, 0) rotate(5deg); }
+    25% { transform: translate(30px, -14px) rotate(-8deg); }
+    50% { transform: translate(60px, 4px) rotate(6deg); }
+    75% { transform: translate(25px, 14px) rotate(-5deg); }
+    100% { transform: translate(0, 0) rotate(5deg); }
+}
+
+@keyframes water-shimmer {
+    0%, 100% { opacity: 0.35; transform: translateX(-10%); }
+    50% { opacity: 0.65; transform: translateX(10%); }
+}
+
+.animate-scale-up {
+    animation: scale-up 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.animate-float {
+    animation: float 2.4s ease-in-out infinite;
+}
+
+.animate-butterfly {
+    animation: butterfly-flight 9s ease-in-out infinite;
+}
+
+.sunbeam-overlay {
+    background: linear-gradient(125deg, rgba(255, 250, 210, 0.5) 0%, rgba(255, 250, 210, 0) 60%);
+    animation: sun-sway 6s ease-in-out infinite;
+    pointer-events: none;
+}
+
+.floating-reward-pop {
+    position: fixed;
+    z-index: 120;
+    pointer-events: none;
+    font-weight: 900;
+    font-size: 0.9rem;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.75);
+    animation: pop-float 1.1s ease-out forwards;
+}
+
+/* Hide scrollbars */
+.scrollbar-none::-webkit-scrollbar {
+    display: none;
+}
+.scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* 3D/4D Glossy Tactile Wood & Emerald Panels */
+.game-wood-panel {
+    background: linear-gradient(180deg, #fffdf5 0%, #fde68a 100%);
+    border: 2px solid #b45309;
+    box-shadow:
+        inset 0 2px 0 rgba(255, 255, 255, 0.85),
+        0 4px 0 #78350f,
+        0 8px 18px rgba(69, 26, 3, 0.22);
+}
+
+.game-emerald-panel {
+    background: linear-gradient(180deg, #f0fdf4 0%, #bbf7d0 100%);
+    border: 2px solid #059669;
+    box-shadow:
+        inset 0 2px 0 rgba(255, 255, 255, 0.85),
+        0 4px 0 #065f46,
+        0 8px 18px rgba(6, 78, 59, 0.16);
+}
+
+/* Tab Active Styles */
+.nav-tab {
+    position: relative;
+}
+.nav-tab.active {
+    color: #047857;
+    background: linear-gradient(180deg, rgba(16, 185, 129, 0.14) 0%, rgba(16, 185, 129, 0) 100%);
+}
+.nav-tab.active::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 20%;
+    right: 20%;
+    height: 3px;
+    border-radius: 0 0 4px 4px;
+    background: linear-gradient(90deg, #10b981, #34d399);
+}
+.nav-tab.active span.text-lg {
+    transform: translateY(-2px) scale(1.18);
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Mảnh Đất Đảo Sunflower Land (Nền cỏ caro xanh mướt + 36 ô đất + Mỏ Tài Nguyên) */
+.farm-parcel-board {
+    position: relative;
+    background-color: #65b334;
+    background-image:
+        repeating-conic-gradient(#6ec439 0% 25%, #5db02d 0% 50%);
+    background-size: 28px 28px;
+    border: 3px solid #78350f;
+    box-shadow:
+        inset 0 2px 6px rgba(255, 255, 255, 0.35),
+        inset 0 -5px 0 #a16207,
+        0 5px 0 #0284c7,
+        0 9px 18px rgba(0, 0, 0, 0.28);
+}
+
+.farm-parcel-board.tier-2-board {
+    background-color: #10b981;
+    background-image:
+        repeating-conic-gradient(#34d399 0% 25%, #10b981 0% 50%);
+    background-size: 28px 28px;
+    border-color: #064e3b;
+}
+
+.farm-parcel-board.tier-3-board {
+    background-color: #9333ea;
+    background-image:
+        repeating-conic-gradient(#a855f7 0% 25%, #7e22ce 0% 50%);
+    background-size: 28px 28px;
+    border-color: #facc15;
+}
+
+.resource-node-card {
+    position: relative;
+    border-radius: 0.65rem;
+    padding: 4px 3px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: transform 0.12s, box-shadow 0.15s;
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.35);
+}
+.resource-node-card:active {
+    transform: scale(0.93);
+}
+.resource-node-card.node-ready {
+    box-shadow: 0 0 8px rgba(250, 204, 21, 0.8), 0 2px 0 rgba(0, 0, 0, 0.35);
+}
+
+/* Từng ô đất bên trong Mảnh Đất Lớn 6x6 */
+.plot-card {
+    position: relative;
+    height: 54px;
+    border-radius: 0.55rem;
+    padding: 2px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    overflow: hidden;
+    transition: transform 0.12s, box-shadow 0.15s;
+    background:
+        radial-gradient(circle at 30% 20%, rgba(255, 220, 170, 0.14), transparent 60%),
+        repeating-linear-gradient(
+            175deg,
+            #703b16 0px,
+            #703b16 5px,
+            #572a0c 5px,
+            #572a0c 10px
+        );
+    border: 2px solid #92400e;
+    box-shadow:
+        inset 0 3px 6px rgba(0, 0, 0, 0.45),
+        0 2px 0 #3f6212;
+}
+
+.plot-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.12), transparent 65%);
+    pointer-events: none;
+}
+
+.plot-card:active {
+    transform: scale(0.94);
+}
+
+.plot-card.watered {
+    background:
+        radial-gradient(circle at 60% 25%, rgba(125, 211, 252, 0.25), transparent 60%),
+        repeating-linear-gradient(
+            175deg,
+            #422008 0px,
+            #422008 5px,
+            #2d1404 5px,
+            #2d1404 10px
+        );
+    border-color: #38bdf8;
+    box-shadow:
+        inset 0 3px 8px rgba(0, 0, 0, 0.5),
+        0 0 8px rgba(56, 189, 248, 0.55);
+}
+
+.plot-card.ready {
+    border-color: #fde047;
+    box-shadow:
+        inset 0 3px 6px rgba(0, 0, 0, 0.28),
+        0 0 10px rgba(250, 204, 21, 0.85);
+    animation: pulse-subtle 1.2s infinite;
+}
+
+.plot-card.locked {
+    background: linear-gradient(155deg, rgba(51, 65, 85, 0.88) 0%, rgba(30, 41, 59, 0.94) 100%);
+    border: 1.5px dashed #94a3b8;
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.45);
+    cursor: pointer;
+}
+
+.plot-card.locked-next {
+    background: linear-gradient(155deg, #475569 0%, #334155 100%);
+    border: 2px dashed #facc15;
+    box-shadow: 0 0 8px rgba(250, 204, 21, 0.55);
+}
+
+.plot-card.tier-2:not(.locked) {
+    border-color: #34d399;
+    box-shadow:
+        inset 0 3px 6px rgba(0, 0, 0, 0.45),
+        0 2px 0 #064e3b;
+}
+
+.plot-card svg {
+    width: 28px !important;
+    height: 28px !important;
+}
+
+.plot-card.ready svg {
+    width: 32px !important;
+    height: 32px !important;
+}
+
+.plot-card.tier-3:not(.locked) {
+    border-color: #fde047;
+    box-shadow:
+        inset 0 3px 6px rgba(88, 28, 135, 0.45),
+        0 2px 0 #4c1d95;
+}
+
+/* Realistic Seed Pills */
+.seed-pill {
+    transition: all 0.2s;
+    border: 2px solid #e2e8f0;
+    box-shadow: 0 3px 0 #cbd5e1;
+}
+.seed-pill.selected {
+    border-color: #059669;
+    background: linear-gradient(180deg, #ecfdf5 0%, #86efac 100%);
+    box-shadow: 0 3px 0 #047857;
+    transform: translateY(-2px);
+}
+
+.btn-shine:active {
+    transform: translateY(2px);
+}
+
+#catch-safe-zone {
+    box-shadow: 0 0 10px #34d399;
+}
+
+/* Icon thỏi vàng 4D sắc nét thay thế cho emoji vuông trên Windows */
+.gold-bar-icon {
+    display: inline-block;
+    width: 1.28em;
+    height: 0.92em;
+    vertical-align: -0.15em;
+    margin: 0 0.08em;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.38));
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 22'%3E%3Cdefs%3E%3ClinearGradient id='gTop' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23fef9c3'/%3E%3Cstop offset='45%25' stop-color='%23facc15'/%3E%3Cstop offset='100%25' stop-color='%23eab308'/%3E%3C/linearGradient%3E%3ClinearGradient id='gFront' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0%25' stop-color='%23f59e0b'/%3E%3Cstop offset='100%25' stop-color='%23b45309'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpolygon points='7,3 25,3 29,11 3,11' fill='url(%23gTop)' stroke='%2392400e' stroke-width='1.3' stroke-linejoin='round'/%3E%3Cpolygon points='3,11 29,11 30.5,19 1.5,19' fill='url(%23gFront)' stroke='%2378350f' stroke-width='1.3' stroke-linejoin='round'/%3E%3Cpolygon points='9.5,4.2 14.5,4.2 11.5,10 6.5,10' fill='rgba(255,255,255,0.65)'/%3E%3Cline x1='8' y1='14.5' x2='24' y2='14.5' stroke='%23fef08a' stroke-width='0.9' opacity='0.6'/%3E%3Cpath d='M25.5 1.5 L26.2 3.3 L28 4 L26.2 4.7 L25.5 6.5 L24.8 4.7 L23 4 L24.8 3.3 Z' fill='%23ffffff'/%3E%3C/svg%3E");
+}
