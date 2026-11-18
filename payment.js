@@ -278,8 +278,7 @@ class PaymentManager {
     }
 
     calcVndReward(amountVnd) {
-        const amt = Math.max(0, Math.floor(Number(amountVnd) || 0));
-        return amt > 100000 ? Math.round(amt * 1.1) : amt;
+        return Math.max(0, Math.floor(Number(amountVnd) || 0));
     }
 
     getMethodLabel(method) {
@@ -295,7 +294,7 @@ class PaymentManager {
         if (!input || !preview) return;
         const amt = Math.max(0, Math.floor(Number(input.value || 0)));
         const reward = this.calcVndReward(amt);
-        const rateTag = amt > 100000 ? '1:1,1' : '1:1';
+        const rateTag = '1:1';
         preview.innerText = `+${reward.toLocaleString()}đ VND (${rateTag})`;
     }
 

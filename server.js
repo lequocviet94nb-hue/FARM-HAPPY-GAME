@@ -81,16 +81,15 @@ const MIME_TYPES = {
 
 // Danh mục gói nạp chuẩn trên Server (Bao gồm VND chợ + Vàng + Kim Cương)
 function calcTopupVndReward(priceVnd) {
-    const amt = Math.max(0, Math.floor(Number(priceVnd) || 0));
-    return amt > 100000 ? Math.round(amt * 1.1) : amt;
+    return Math.max(0, Math.floor(Number(priceVnd) || 0));
 }
 
 const TOPUP_PACKS = [
-    { id: 'pack_20k', name: 'Nạp 20.000đ', priceVnd: 20000, vnd: calcTopupVndReward(20000), gold: 0, diamonds: 0, vipMinutes: 0, badge: 'Tỉ lệ 1:1' },
-    { id: 'pack_50k', name: 'Nạp 50.000đ', priceVnd: 50000, vnd: calcTopupVndReward(50000), gold: 0, diamonds: 0, vipMinutes: 0, badge: 'Tỉ lệ 1:1' },
-    { id: 'pack_100k', name: 'Nạp 100.000đ', priceVnd: 100000, vnd: calcTopupVndReward(100000), gold: 0, diamonds: 0, vipMinutes: 0, badge: 'Tỉ lệ 1:1' },
-    { id: 'pack_200k', name: 'Nạp 200.000đ', priceVnd: 200000, vnd: calcTopupVndReward(200000), gold: 0, diamonds: 0, vipMinutes: 0, badge: '🔥 1:1,1 (+10%)' },
-    { id: 'pack_500k', name: 'Nạp 500.000đ', priceVnd: 500000, vnd: calcTopupVndReward(500000), gold: 0, diamonds: 0, vipMinutes: 0, badge: '💎 1:1,1 (+10%)' }
+    { id: 'pack_20k', name: 'Nạp 20.000đ', priceVnd: 20000, vnd: 20000, gold: 0, diamonds: 0, vipMinutes: 0, badge: 'Tỉ lệ 1:1' },
+    { id: 'pack_50k', name: 'Nạp 50.000đ', priceVnd: 50000, vnd: 50000, gold: 0, diamonds: 0, vipMinutes: 0, badge: 'Tỉ lệ 1:1' },
+    { id: 'pack_100k', name: 'Nạp 100.000đ', priceVnd: 100000, vnd: 100000, gold: 0, diamonds: 0, vipMinutes: 0, badge: 'Tỉ lệ 1:1' },
+    { id: 'pack_200k', name: 'Nạp 200.000đ', priceVnd: 200000, vnd: 200000, gold: 0, diamonds: 0, vipMinutes: 0, badge: 'Tỉ lệ 1:1' },
+    { id: 'pack_500k', name: 'Nạp 500.000đ', priceVnd: 500000, vnd: 500000, gold: 0, diamonds: 0, vipMinutes: 0, badge: 'Tỉ lệ 1:1' }
 ];
 
 function ensureDataFiles() {
@@ -883,9 +882,9 @@ async function handleApi(req, res, cleanUrl, urlObj) {
             ok: true,
             packs: TOPUP_PACKS,
             rateRule: {
-                thresholdVnd: 100000,
+                thresholdVnd: 0,
                 baseRate: 1,
-                bonusRate: 1.1,
+                bonusRate: 1,
                 minCustomVnd: 10000
             },
             momo: {
