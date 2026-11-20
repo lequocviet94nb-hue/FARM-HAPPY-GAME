@@ -9186,10 +9186,15 @@ class GameEngine {
     }
 
     openVipCenterModal(tab = null) {
-        window.sound.playClick();
+        if (window.sound?.playClick) window.sound.playClick();
         const targetTab = tab || (this.canClaimVipDailyGift() ? 'daily' : 'buy');
         this.switchVipTab(targetTab);
-        document.getElementById('modal-vip-center').classList.remove('hidden');
+        const modal = document.getElementById('modal-vip-center');
+        if (modal) modal.classList.remove('hidden');
+    }
+
+    openVipModal(tab = 'buy') {
+        this.openVipCenterModal(tab);
     }
 
     openVipTicketModal() {
