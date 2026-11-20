@@ -1,0 +1,1001 @@
+{
+  "economyVersion": 3,
+  "level": 1,
+  "exp": 0,
+  "gold": 401,
+  "diamonds": 0,
+  "vnd": 0,
+  "energy": 20,
+  "maxEnergy": 20,
+  "selectedSeed": "rau_mam",
+  "plots": [
+    {
+      "id": 0,
+      "tier": 1,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 1,
+      "tier": 1,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 2,
+      "tier": 1,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 3,
+      "tier": 1,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 4,
+      "tier": 1,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 5,
+      "tier": 1,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 6,
+      "tier": 1,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 7,
+      "tier": 1,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 8,
+      "tier": 1,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 9,
+      "tier": 1,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 10,
+      "tier": 1,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 11,
+      "tier": 1,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 12,
+      "tier": 1,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 13,
+      "tier": 1,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 14,
+      "tier": 1,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 15,
+      "tier": 1,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 16,
+      "tier": 1,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 17,
+      "tier": 1,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 18,
+      "tier": 1,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 19,
+      "tier": 1,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 20,
+      "tier": 1,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 21,
+      "tier": 1,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 22,
+      "tier": 1,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 23,
+      "tier": 1,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 24,
+      "tier": 1,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 25,
+      "tier": 1,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 26,
+      "tier": 1,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 27,
+      "tier": 1,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 28,
+      "tier": 1,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 29,
+      "tier": 1,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 30,
+      "tier": 1,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 31,
+      "tier": 1,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 32,
+      "tier": 1,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 33,
+      "tier": 1,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 34,
+      "tier": 1,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 35,
+      "tier": 1,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 36,
+      "tier": 2,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 37,
+      "tier": 2,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 38,
+      "tier": 2,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 39,
+      "tier": 2,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 40,
+      "tier": 2,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 41,
+      "tier": 2,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 42,
+      "tier": 2,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 43,
+      "tier": 2,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 44,
+      "tier": 2,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 45,
+      "tier": 2,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 46,
+      "tier": 2,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 47,
+      "tier": 2,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 48,
+      "tier": 2,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 49,
+      "tier": 2,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 50,
+      "tier": 2,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 51,
+      "tier": 2,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 52,
+      "tier": 2,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 53,
+      "tier": 2,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 54,
+      "tier": 2,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 55,
+      "tier": 2,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 56,
+      "tier": 2,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 57,
+      "tier": 2,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 58,
+      "tier": 2,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 59,
+      "tier": 2,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 60,
+      "tier": 2,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 61,
+      "tier": 2,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 62,
+      "tier": 2,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 63,
+      "tier": 2,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 64,
+      "tier": 2,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 65,
+      "tier": 2,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 66,
+      "tier": 2,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 67,
+      "tier": 2,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 68,
+      "tier": 2,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 69,
+      "tier": 2,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 70,
+      "tier": 2,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 71,
+      "tier": 2,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 72,
+      "tier": 3,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 73,
+      "tier": 3,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 74,
+      "tier": 3,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 75,
+      "tier": 3,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 76,
+      "tier": 3,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 77,
+      "tier": 3,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 78,
+      "tier": 3,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 79,
+      "tier": 3,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 80,
+      "tier": 3,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 81,
+      "tier": 3,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 82,
+      "tier": 3,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 83,
+      "tier": 3,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 84,
+      "tier": 3,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 85,
+      "tier": 3,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 86,
+      "tier": 3,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 87,
+      "tier": 3,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 88,
+      "tier": 3,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 89,
+      "tier": 3,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 90,
+      "tier": 3,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 91,
+      "tier": 3,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 92,
+      "tier": 3,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 93,
+      "tier": 3,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 94,
+      "tier": 3,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 95,
+      "tier": 3,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 96,
+      "tier": 3,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 97,
+      "tier": 3,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 98,
+      "tier": 3,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 99,
+      "tier": 3,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 100,
+      "tier": 3,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 101,
+      "tier": 3,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 102,
+      "tier": 3,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 103,
+      "tier": 3,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 104,
+      "tier": 3,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 105,
+      "tier": 3,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 106,
+      "tier": 3,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    },
+    {
+      "id": 107,
+      "tier": 3,
+      "unlocked": false,
+      "crop": null,
+      "plantedAt": 0,
+      "watered": false
+    }
+  ],
+  "plot0AdsWatched": 0,
+  "resourceNodes": [
+    {
+      "uid": 1,
+      "type": "tree",
+      "harvestedAt": 0
+    },
+    {
+      "uid": 2,
+      "type": "tree",
+      "harvestedAt": 0
+    },
+    {
+      "uid": 3,
+      "type": "tree",
+      "harvestedAt": 0
+    },
+    {
+      "uid": 4,
+      "type": "stone",
+      "harvestedAt": 0
+    }
+  ],
+  "nextNodeUid": 5,
+  "tools": {
+    "pick_wood": 0,
+    "pick_stone": 0,
+    "pick_iron": 0,
+    "pick_gold": 0
+  },
+  "smithStock": {
+    "date": "2026-11-16",
+    "limitVersion": 2,
+    "items": {
+      "pick_wood": 50,
+      "pick_stone": 30,
+      "pick_iron": 20,
+      "pick_gold": 10
+    }
+  },
+  "coopTier": 1,
+  "chickens": [
+    {
+      "id": 1794752521146,
+      "breed": "ri",
+      "fedAt": 1794752520803,
+      "readyAt": 1794838920803
+    }
+  ],
+  "coopFood": 0,
+  "eggsOnGround": [],
+  "chickenBoostUntil": 0,
+  "phoenixUntil": 0,
+  "dailyQuests": {
+    "date": "2026-11-16",
+    "claimed": {
+      "q_farm_basic": false,
+      "q_farm_veggie": false,
+      "q_eggs_basket": false,
+      "q_fish_normal": false,
+      "q_farm_harvest": false,
+      "q_farm_luxury": false,
+      "q_big_feast": false,
+      "q_livestock_vip": false,
+      "q_dragon_king": false
+    }
+  },
+  "inventory": {},
+  "seedBag": {},
+  "seedBagMigrated15": true,
+  "npcStock": {
+    "date": "2026-11-16",
+    "seedLimitVersion": 3,
+    "items": {
+      "seed_rau_mam": 100,
+      "seed_anh_dao": 100,
+      "seed_dau_tay": 100,
+      "seed_nam_linh_chi": 100,
+      "seed_khoai_tay": 100,
+      "seed_carrot": 50,
+      "seed_tomato": 50,
+      "seed_rice": 50,
+      "seed_bap_ngo": 50,
+      "seed_sunflower": 50,
+      "seed_dua_mat": 20,
+      "seed_nho_tim": 20,
+      "seed_watermelon": 20,
+      "seed_bi_ngo": 20,
+      "seed_lucky_tree": 20
+    }
+  },
+  "totalCakesCooked": 0,
+  "bakeryFilter": "all",
+  "bakingSlots": {},
+  "rodLevel": 1,
+  "hasVipRodPermanent": false,
+  "isVipRod": false,
+  "vipRodUntil": 0,
+  "vipTicketUntil": 0,
+  "vipAccessUntil": 0,
+  "vipPlanId": null,
+  "vipDailyStreak": 0,
+  "vipLastGiftDate": "",
+  "vipStats": {
+    "dailyGoldClaimed": 0,
+    "vndFeeSaved": 0,
+    "dailyGiftsClaimed": 0
+  },
+  "adGold2h": {
+    "date": "2026-11-16",
+    "claimsToday": 0,
+    "nextClaimAt": 1794755842288
+  },
+  "marketListingsToday": {
+    "date": "2026-11-16",
+    "count": 0
+  },
+  "totalFishCount": 0,
+  "lastEnergyTime": 1794750529042,
+  "savedAt": 1794796135311,
+  "dailyFishing": {
+    "date": "2026-11-16",
+    "count": 0
+  }
+}

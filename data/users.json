@@ -1,0 +1,41 @@
+{
+  "users": {
+    "lequocviet94nb": {
+      "username": "lequocviet94nb",
+      "displayName": "VIET",
+      "playerId": "ACC_lequocviet94nb",
+      "salt": "7cf7b9d709a0b4d797c20c094857fc1a",
+      "passwordHash": "c94300f392fdd85c9dbdeef291f0a191c0ed27127c67a4feaee21fe299ecba4d2172e7d2fa86241bcab72fe2e6f99eda86c6cd49d63826dd47295c1e0bb9f8ce",
+      "createdAt": 1794495723389,
+      "lastLoginAt": 1794970620705
+    },
+    "lequocviet94": {
+      "username": "lequocviet94",
+      "displayName": "dsvdv",
+      "playerId": "ACC_lequocviet94",
+      "salt": "107b25f02dd73826e6df360f1e742c3b",
+      "passwordHash": "ebc1ca5246090e3043a074bd5227594067d163c8997f4be760425ac77a102a8cf0e25b22f94cbae5fc7da692ddba9cc11eaafce02210d71c9d37b6738528a43d",
+      "createdAt": 1794536385385,
+      "lastLoginAt": 1794970334958
+    },
+    "lequocviet": {
+      "username": "lequocviet",
+      "displayName": "VIET2",
+      "playerId": "ACC_lequocviet",
+      "salt": "2736b2629f95f96ce606560a0c6cff80",
+      "passwordHash": "983ed96360796066f6cd2387a9565d985363dea1502525c0530687899971404360a91bb8d3424235f690f3dd11fd1a0e7a38bd78fa3a121925fd3c089e617bf9",
+      "createdAt": 1794748867163,
+      "lastLoginAt": 1794748867163
+    },
+    "lequoc": {
+      "username": "lequoc",
+      "displayName": "dsvdv",
+      "playerId": "ACC_lequoc",
+      "salt": "15ab0a53db13db7ab77059f3e1eb7c7f",
+      "passwordHash": "2e643ba10b2a8c79e969158f2dc08b0654471a3588307ed05a8f45c1751439a041ba9d608d26ee0da19051ea273a761d83cb227949504d1a5d7c26c57a8865e9",
+      "createdAt": 1794750529036,
+      "lastLoginAt": 1794750529036
+    }
+  },
+  "sessions": {}
+}
