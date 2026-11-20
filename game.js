@@ -681,6 +681,205 @@ const SCRAP_QUESTS_META = [
     }
 ];
 
+// ==========================================
+// HỆ THỐNG NHIỆM VỤ THƯƠNG LÁI HOÀNG GIA ĐỔI LẤY TIỀN MẶT VND
+// 1. Đơn Free: Xoay vòng mỗi ngày (Trứng gà, 2 Nông sản, Đá, Cá, Sắt, Bánh nướng...) -> Thưởng 20đ VND
+// 2. 5 Đơn VIP: Cần kích hoạt VIP mới được trả -> Thưởng 100đ VND / đơn
+// 3. Mỗi nhiệm vụ trước khi trả đều bắt buộc xem 2 Video Quảng Cáo
+// ==========================================
+const FREE_VND_QUESTS_ROTATION = [
+    {
+        title: 'Đơn 1: Thu Gom Trứng Gà Tươi',
+        subTitle: 'Nhiệm vụ nông dân tự do (Đổi mới mỗi ngày • Ai cũng trả được)',
+        requirements: [
+            { id: 'egg_normal', qty: 2, name: 'Trứng Gà', icon: '🥚' }
+        ],
+        desc: 'Giao nộp 2 Quả Trứng Gà tươi từ chuồng để nhận ngay 20đ VND tiền mặt.'
+    },
+    {
+        title: 'Đơn 1: Tiếp Tế Cà Rốt & Khoai Tây',
+        subTitle: 'Nhiệm vụ nông dân tự do (Đổi mới mỗi ngày • Ai cũng trả được)',
+        requirements: [
+            { id: 'carrot', qty: 5, name: 'Cà Rốt', icon: '🥕' },
+            { id: 'khoai_tay', qty: 5, name: 'Khoai Tây', icon: '🥔' }
+        ],
+        desc: 'Giao nộp 5 Cà Rốt và 5 Khoai Tây tươi ngon thu hoạch từ ruộng để nhận ngay 20đ VND.'
+    },
+    {
+        title: 'Đơn 1: Khai Khoáng Đá Tự Nhiên',
+        subTitle: 'Nhiệm vụ nông dân tự do (Đổi mới mỗi ngày • Ai cũng trả được)',
+        requirements: [
+            { id: 'stone', qty: 3, name: 'Đá Khai Khoáng', icon: '⛰️' }
+        ],
+        desc: 'Khai thác mỏ đá và giao nộp 3 Viên Đá tự nhiên để nhận ngay 20đ VND.'
+    },
+    {
+        title: 'Đơn 1: Đánh Bắt Cá Rô Đồng',
+        subTitle: 'Nhiệm vụ nông dân tự do (Đổi mới mỗi ngày • Ai cũng trả được)',
+        requirements: [
+            { id: 'fish_ro', qty: 1, name: 'Cá Rô Đồng', icon: '🐟' }
+        ],
+        desc: 'Câu cá tại bờ ao và giao nộp 1 con Cá Rô Đồng tươi sống để nhận ngay 20đ VND.'
+    },
+    {
+        title: 'Đơn 1: Thu Gom Quặng Sắt Luyện Kim',
+        subTitle: 'Nhiệm vụ nông dân tự do (Đổi mới mỗi ngày • Ai cũng trả được)',
+        requirements: [
+            { id: 'iron', qty: 1, name: 'Cục Sắt', icon: '⚙️' }
+        ],
+        desc: 'Khai khoáng tìm 1 Cục Sắt nguyên chất giao nộp cho lò rèn để nhận ngay 20đ VND.'
+    },
+    {
+        title: 'Đơn 1: Bánh Pizza Cà Chua Thảo Mộc (Trung Cấp)',
+        subTitle: 'Nhiệm vụ nông dân tự do (Đổi mới mỗi ngày • Ai cũng trả được)',
+        requirements: [
+            { id: 'cake_tomato', qty: 1, name: 'Bánh Pizza Cà Chua', icon: '🍅' }
+        ],
+        desc: 'Nướng 1 chiếc Bánh Pizza Cà Chua Thảo Mộc (Bánh Trung Cấp) từ Lò Nướng để nhận ngay 20đ VND.'
+    },
+    {
+        title: 'Đơn 1: Tiếp Tế Cà Chua & Lúa Vàng',
+        subTitle: 'Nhiệm vụ nông dân tự do (Đổi mới mỗi ngày • Ai cũng trả được)',
+        requirements: [
+            { id: 'tomato', qty: 5, name: 'Cà Chua', icon: '🍅' },
+            { id: 'rice', qty: 5, name: 'Lúa Nước', icon: '🌾' }
+        ],
+        desc: 'Giao nộp 5 Cà Chua và 5 Lúa Nước bội thu mùa vụ để nhận ngay 20đ VND.'
+    },
+    {
+        title: 'Đơn 1: Thu Gom Trứng Gà Trang Trại',
+        subTitle: 'Nhiệm vụ nông dân tự do (Đổi mới mỗi ngày • Ai cũng trả được)',
+        requirements: [
+            { id: 'egg_normal', qty: 3, name: 'Trứng Gà', icon: '🥚' }
+        ],
+        desc: 'Giao nộp 3 Quả Trứng Gà sạch từ đàn gà đẻ trứng để nhận ngay 20đ VND.'
+    },
+    {
+        title: 'Đơn 1: Đánh Bắt Cá Chép Vàng',
+        subTitle: 'Nhiệm vụ nông dân tự do (Đổi mới mỗi ngày • Ai cũng trả được)',
+        requirements: [
+            { id: 'fish_chep', qty: 1, name: 'Cá Chép Vàng', icon: '🐠' }
+        ],
+        desc: 'Câu cá tại bờ ao và giao nộp 1 con Cá Chép Vàng óng ánh để nhận ngay 20đ VND.'
+    },
+    {
+        title: 'Đơn 1: Khai Khoáng Đá Xây Dựng',
+        subTitle: 'Nhiệm vụ nông dân tự do (Đổi mới mỗi ngày • Ai cũng trả được)',
+        requirements: [
+            { id: 'stone', qty: 4, name: 'Đá Khai Khoáng', icon: '⛰️' }
+        ],
+        desc: 'Khai thác thêm 4 Viên Đá tự nhiên từ mỏ đá để nhận ngay 20đ VND.'
+    },
+    {
+        title: 'Đơn 1: Bánh Bông Lan Gạo Nếp Sữa (Trung Cấp)',
+        subTitle: 'Nhiệm vụ nông dân tự do (Đổi mới mỗi ngày • Ai cũng trả được)',
+        requirements: [
+            { id: 'cake_rice', qty: 1, name: 'Bánh Bông Lan Gạo', icon: '🌾' }
+        ],
+        desc: 'Nướng 1 chiếc Bánh Bông Lan Gạo Nếp Sữa (Bánh Trung Cấp) từ Lò Nướng để nhận ngay 20đ VND.'
+    },
+    {
+        title: 'Đơn 1: Thu Gom Quặng Sắt Rèn Đúc',
+        subTitle: 'Nhiệm vụ nông dân tự do (Đổi mới mỗi ngày • Ai cũng trả được)',
+        requirements: [
+            { id: 'iron', qty: 2, name: 'Cục Sắt', icon: '⚙️' }
+        ],
+        desc: 'Khai thác 2 Cục Sắt nguyên chất giao nộp cho lò rèn để nhận ngay 20đ VND.'
+    },
+    {
+        title: 'Đơn 1: Tiếp Tế Bắp Ngô & Dâu Tây',
+        subTitle: 'Nhiệm vụ nông dân tự do (Đổi mới mỗi ngày • Ai cũng trả được)',
+        requirements: [
+            { id: 'bap_ngo', qty: 5, name: 'Bắp Ngô', icon: '🌽' },
+            { id: 'dau_tay', qty: 5, name: 'Dâu Tây', icon: '🍓' }
+        ],
+        desc: 'Giao nộp 5 Bắp Ngô vàng và 5 Quả Dâu Tây ngọt lịm từ vườn để nhận ngay 20đ VND.'
+    },
+    {
+        title: 'Đơn 1: Bánh Ngô Nướng Bơ Mật (Trung Cấp)',
+        subTitle: 'Nhiệm vụ nông dân tự do (Đổi mới mỗi ngày • Ai cũng trả được)',
+        requirements: [
+            { id: 'cake_bap_ngo', qty: 1, name: 'Bánh Ngô Bơ Mật', icon: '🌽' }
+        ],
+        desc: 'Nướng 1 chiếc Bánh Ngô Nướng Bơ Mật (Bánh Trung Cấp) thơm lừng để nhận ngay 20đ VND.'
+    }
+];
+
+const VIP_VND_QUESTS_META = [
+    {
+        id: 'vnd_q2_vip',
+        index: 2,
+        title: 'Đơn 2: Kho Thóc Hoàng Gia',
+        subTitle: 'Đơn đặt hàng VIP cấp 1 (Cần Thẻ VIP)',
+        isVipOnly: true,
+        rewardVnd: 100,
+        badgeText: '👑 VIP 1',
+        badgeClass: 'bg-purple-100 text-purple-900 border-purple-400 font-black',
+        requirements: [
+            { id: 'rice', qty: 10, name: 'Lúa Nước', icon: '🌾' }
+        ],
+        desc: 'Cung cấp 10 bó Lúa Nước vàng óng cho kho thóc hoàng gia nhận 100đ VND.'
+    },
+    {
+        id: 'vnd_q3_vip',
+        index: 3,
+        title: 'Đơn 3: Khai Khoáng Hoàng Cung',
+        subTitle: 'Đơn đặt hàng VIP cấp 2 (Cần Thẻ VIP)',
+        isVipOnly: true,
+        rewardVnd: 100,
+        badgeText: '👑 VIP 2',
+        badgeClass: 'bg-purple-100 text-purple-900 border-purple-400 font-black',
+        requirements: [
+            { id: 'wood', qty: 5, name: 'Gỗ', icon: '🌳' },
+            { id: 'stone', qty: 2, name: 'Đá', icon: '⛰️' }
+        ],
+        desc: 'Cung cấp 5 khúc Gỗ và 2 tảng Đá tự nhiên để xây dựng hoàng cung nhận 100đ VND.'
+    },
+    {
+        id: 'vnd_q4_vip',
+        index: 4,
+        title: 'Đơn 4: Đại Tiệc Trứng Gà Cung Đình',
+        subTitle: 'Đơn đặt hàng VIP cấp 3 (Cần Thẻ VIP)',
+        isVipOnly: true,
+        rewardVnd: 100,
+        badgeText: '👑 VIP 3',
+        badgeClass: 'bg-purple-100 text-purple-900 border-purple-400 font-black',
+        requirements: [
+            { id: 'egg_normal', qty: 3, name: 'Trứng Gà', icon: '🥚' }
+        ],
+        desc: 'Giao nộp 3 Quả Trứng Gà hảo hạng phục vụ đại tiệc cung đình nhận 100đ VND.'
+    },
+    {
+        id: 'vnd_q5_vip',
+        index: 5,
+        title: 'Đơn 5: Cung Cấp Sắt Luyện Kim',
+        subTitle: 'Đơn đặt hàng VIP cấp 4 (Cần Thẻ VIP)',
+        isVipOnly: true,
+        rewardVnd: 100,
+        badgeText: '👑 VIP 4',
+        badgeClass: 'bg-purple-100 text-purple-900 border-purple-400 font-black',
+        requirements: [
+            { id: 'iron', qty: 2, name: 'Cục Sắt', icon: '⚙️' }
+        ],
+        desc: 'Khai thác 2 Cục Sắt nguyên chất giao cho lò rèn đúc vũ khí hoàng gia nhận 100đ VND.'
+    },
+    {
+        id: 'vnd_q6_vip',
+        index: 6,
+        title: 'Đơn 6: Đại Đơn Hàng Vàng Phú Quý',
+        subTitle: 'Đơn hàng Hoàng Gia tối thượng (Cần Thẻ VIP)',
+        isVipOnly: true,
+        rewardVnd: 100,
+        badgeText: '👑 VIP 5',
+        badgeClass: 'bg-amber-100 text-amber-900 border-amber-500 font-black',
+        requirements: [
+            { id: 'gold_ore', qty: 1, name: 'Cục Vàng', icon: '✨' },
+            { id: 'egg_normal', qty: 1, name: 'Trứng Gà', icon: '🥚' }
+        ],
+        desc: 'Cung cấp 1 Cục Vàng quý hiếm và 1 Quả Trứng Gà nhận đại thưởng 100đ VND.'
+    }
+];
+
 // Nhiệm Vụ Trả Tài Nguyên Hàng Ngày (Dùng Nông sản, Cá, Trứng, Vật nuôi trong kho - CHỈ thưởng Vàng)
 // Chú ý: Cá câu được giao cho Long Nữ nhận Vàng = Giá mua Phú Nông của tổng 5 mồi câu hôm đó + 140 vàng + 10 vàng
 const DAILY_QUESTS_META = [
@@ -1009,6 +1208,10 @@ class GameEngine {
             scrapQuest: {
                 date: this.getTodayDateKey(),
                 claimed: false
+            },
+            vndQuests: {
+                date: this.getTodayDateKey(),
+                claimed: {}
             },
             totalFishCount: 0,
             lastEnergyTime: Date.now()
@@ -1709,6 +1912,11 @@ class GameEngine {
         this.renderChickenUI();
         this.renderSunflowerFishingUI();
         this.renderQuestsUI();
+        const vndModal = document.getElementById('modal-vnd-merchant');
+        if (vndModal && !vndModal.classList.contains('hidden')) {
+            this.renderVndMerchantUI();
+        }
+        this.updateVndQuestNotificationDot();
         const npcModal = document.getElementById('modal-npc-shop');
         if (npcModal && !npcModal.classList.contains('hidden')) {
             this.renderNpcShop();
@@ -8595,6 +8803,303 @@ class GameEngine {
     }
 
     // ==========================================
+    // NPC THƯƠNG LÁI HOÀNG GIA (TRẢ NHIỆM VỤ NHẬN TIỀN MẶT VND)
+    // ==========================================
+    openVndMerchantModal() {
+        if (!this.data.vndQuests || this.data.vndQuests.date !== this.getTodayDateKey()) {
+            this.data.vndQuests = { date: this.getTodayDateKey(), claimed: {} };
+        }
+        if (!this.data.vndQuests.claimed) this.data.vndQuests.claimed = {};
+        this.renderVndMerchantUI();
+        const m = document.getElementById('modal-vnd-merchant');
+        if (m) m.classList.remove('hidden');
+        if (window.soundManager) window.soundManager.play('click');
+    }
+
+    closeVndMerchantModal() {
+        const m = document.getElementById('modal-vnd-merchant');
+        if (m) m.classList.add('hidden');
+    }
+
+    getTodayFreeVndQuest() {
+        const todayKey = this.getTodayDateKey ? this.getTodayDateKey() : new Date().toISOString().slice(0, 10);
+        const parts = todayKey.split('-').map(Number);
+        const dayNumber = Math.floor(Date.UTC(parts[0], (parts[1] || 1) - 1, parts[2] || 1) / 86400000);
+        const idx = Math.abs(dayNumber) % FREE_VND_QUESTS_ROTATION.length;
+        const item = FREE_VND_QUESTS_ROTATION[idx];
+        return {
+            ...item,
+            id: 'vnd_q1_free',
+            index: 1,
+            isVipOnly: false,
+            rewardVnd: 20,
+            badgeText: 'Miễn Phí',
+            badgeClass: 'bg-emerald-100 text-emerald-800 border-emerald-400'
+        };
+    }
+
+    getAllVndMerchantQuests() {
+        return [this.getTodayFreeVndQuest(), ...VIP_VND_QUESTS_META];
+    }
+
+    renderVndMerchantUI() {
+        if (!this.data.vndQuests || this.data.vndQuests.date !== this.getTodayDateKey()) {
+            this.data.vndQuests = { date: this.getTodayDateKey(), claimed: {} };
+        }
+        if (!this.data.vndQuests.claimed) this.data.vndQuests.claimed = {};
+
+        const isVip = this.hasVipPass();
+        const vipBadgeEl = document.getElementById('vnd-merchant-vip-badge');
+        if (vipBadgeEl) {
+            if (isVip) {
+                vipBadgeEl.innerHTML = `
+                    <div class="px-2.5 py-1 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-300 text-slate-950 font-black text-[9.5px] shadow border border-yellow-100 flex flex-col items-center">
+                        <span>👑 VIP HOẠT ĐỘNG</span>
+                        <span class="text-[8px] font-extrabold text-amber-950">Mở Trọn Bộ 6/6 Đơn</span>
+                    </div>
+                `;
+            } else {
+                vipBadgeEl.innerHTML = `
+                    <button type="button" onclick="game.openVipModal()" class="px-2 py-1 rounded-xl bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-400 hover:brightness-110 active:scale-95 text-slate-950 font-black text-[9px] shadow border border-yellow-200 flex flex-col items-center cursor-pointer">
+                        <span>🔒 CHƯA CÓ VIP</span>
+                        <span class="text-[8px] font-extrabold underline text-amber-950">Bấm Mua VIP</span>
+                    </button>
+                `;
+            }
+        }
+
+        const listEl = document.getElementById('vnd-merchant-quest-list');
+        if (!listEl) return;
+
+        let hasReadyClaim = false;
+        const quests = this.getAllVndMerchantQuests();
+
+        const html = quests.map(q => {
+            const isClaimed = !!this.data.vndQuests.claimed[q.id];
+            const isLockedVip = q.isVipOnly && !isVip;
+
+            let allEnough = true;
+            const reqItemsHtml = q.requirements.map(r => {
+                const have = this.data.inventory?.[r.id] || 0;
+                const ok = have >= r.qty;
+                if (!ok) allEnough = false;
+                return `
+                    <div class="flex items-center gap-1.5 px-2 py-1 rounded-xl border text-[10.5px] font-bold ${
+                        ok ? 'bg-emerald-50/90 border-emerald-300 text-emerald-950' : 'bg-rose-50/80 border-rose-200 text-rose-900'
+                    }">
+                        <span class="text-sm">${r.icon}</span>
+                        <span class="font-extrabold">${r.name}:</span>
+                        <span class="font-black ${ok ? 'text-emerald-700' : 'text-rose-600'}">${have}/${r.qty} ${ok ? '✓' : ''}</span>
+                    </div>
+                `;
+            }).join('');
+
+            let actionBtnHtml = '';
+            if (isClaimed) {
+                actionBtnHtml = `
+                    <button type="button" disabled
+                        class="w-full py-2 rounded-xl bg-slate-200 text-slate-500 font-black text-[10.5px] cursor-not-allowed flex items-center justify-center gap-1 shadow-inner">
+                        <span>✓ Đã Hoàn Thành Hôm Nay (+${q.rewardVnd.toLocaleString('vi-VN')}đ 💵)</span>
+                    </button>
+                `;
+            } else if (isLockedVip) {
+                actionBtnHtml = `
+                    <button type="button" onclick="game.openVipModal()"
+                        class="w-full py-2 rounded-xl bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 hover:brightness-110 active:scale-95 text-slate-950 font-black text-[10.5px] shadow-sm border border-yellow-200 flex items-center justify-center gap-1.5 cursor-pointer">
+                        <span>👑 Cần Mua VIP Để Mở Đơn Này (+${q.rewardVnd.toLocaleString('vi-VN')}đ VND)</span>
+                    </button>
+                `;
+            } else if (allEnough) {
+                hasReadyClaim = true;
+                actionBtnHtml = `
+                    <button type="button" onclick="game.claimVndMerchantQuest('${q.id}')"
+                        class="w-full py-2 rounded-xl bg-gradient-to-r from-emerald-600 via-green-600 to-teal-600 hover:brightness-110 active:scale-95 text-white font-black text-[11px] shadow-md border-b-2 border-emerald-900 flex items-center justify-center gap-1.5 cursor-pointer animate-pulse">
+                        <span>🎁 Trả nhiệm vụ (Xem 2 QC Nhận +${q.rewardVnd.toLocaleString('vi-VN')}đ VND)</span>
+                    </button>
+                `;
+            } else {
+                actionBtnHtml = `
+                    <button type="button" onclick="game.claimVndMerchantQuest('${q.id}')"
+                        class="w-full py-2 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-950 border border-amber-300 font-black text-[10px] active:scale-95 flex items-center justify-center gap-1 cursor-pointer">
+                        <span>⚠️ Chưa Đủ Vật Phẩm (Bấm xem thiếu gì)</span>
+                    </button>
+                `;
+            }
+
+            return `
+                <div class="bg-white/95 rounded-2xl p-2.5 border-2 ${
+                    isClaimed
+                        ? 'border-slate-300 bg-slate-50/70 opacity-80'
+                        : (isLockedVip
+                            ? 'border-amber-300/90 bg-amber-50/35'
+                            : (allEnough ? 'border-emerald-500 ring-2 ring-emerald-300/70 shadow-sm' : 'border-emerald-200'))
+                } flex flex-col gap-2">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-1.5 min-w-0">
+                            <span class="text-[9px] font-black px-1.5 py-0.5 rounded-md border flex-shrink-0 ${q.badgeClass}">${q.badgeText}</span>
+                            <span class="font-black text-[11.5px] text-emerald-950 truncate">${q.title}</span>
+                            ${q.isVipOnly ? '<span class="text-[8.5px] bg-purple-700 text-white font-black px-1.5 py-0.2 rounded-full flex-shrink-0">👑 VIP</span>' : '<span class="text-[8.5px] bg-emerald-600 text-white font-black px-1.5 py-0.2 rounded-full flex-shrink-0">Free</span>'}
+                        </div>
+                        <div class="text-xs font-black text-emerald-700 bg-emerald-100/90 px-2.5 py-0.5 rounded-lg border border-emerald-300 flex items-center gap-0.5 flex-shrink-0">
+                            <span>+${q.rewardVnd.toLocaleString('vi-VN')}đ</span>
+                            <span class="text-[9px] font-bold text-slate-700">VND</span>
+                        </div>
+                    </div>
+                    <p class="text-[9.5px] text-slate-600 font-medium leading-snug">${q.desc}</p>
+                    <div class="flex flex-wrap items-center gap-1.5">
+                        ${reqItemsHtml}
+                    </div>
+                    ${actionBtnHtml}
+                </div>
+            `;
+        }).join('');
+
+        listEl.innerHTML = html;
+
+        // Cập nhật chấm đỏ thông báo
+        const headerDot = document.getElementById('vnd-quest-header-dot');
+        if (headerDot) {
+            headerDot.classList.toggle('hidden', !hasReadyClaim);
+        }
+    }
+
+    async claimVndMerchantQuest(questId) {
+        if (this.isVndQuestBusy) {
+            if (window.adsgramManager?.showToast) {
+                window.adsgramManager.showToast('Đang xử lý quảng cáo hoặc nhiệm vụ, vui lòng đợi!', 'info');
+            }
+            return;
+        }
+
+        if (!this.data.vndQuests || this.data.vndQuests.date !== this.getTodayDateKey()) {
+            this.data.vndQuests = { date: this.getTodayDateKey(), claimed: {} };
+        }
+        if (!this.data.vndQuests.claimed) this.data.vndQuests.claimed = {};
+
+        const quests = this.getAllVndMerchantQuests();
+        const quest = quests.find(q => q.id === questId);
+        if (!quest) return;
+
+        if (this.data.vndQuests.claimed[questId]) {
+            if (window.adsgramManager?.showToast) {
+                window.adsgramManager.showToast('Bạn đã trả đơn hàng này hôm nay rồi! Hãy quay lại vào ngày mai.', 'info');
+            }
+            return;
+        }
+
+        const isVip = this.hasVipPass();
+        if (quest.isVipOnly && !isVip) {
+            if (window.adsgramManager?.showToast) {
+                window.adsgramManager.showToast(`🔒 Đơn hàng này chỉ dành cho thành viên VIP! Hãy kích hoạt VIP để nhận +${quest.rewardVnd.toLocaleString('vi-VN')}đ VND.`, 'warning');
+            }
+            this.openVipModal();
+            return;
+        }
+
+        const missing = [];
+        quest.requirements.forEach(r => {
+            const have = this.data.inventory?.[r.id] || 0;
+            if (have < r.qty) {
+                missing.push(`${r.qty - have} ${r.name}`);
+            }
+        });
+
+        if (missing.length > 0) {
+            if (window.adsgramManager?.showToast) {
+                window.adsgramManager.showToast(`Còn thiếu: ${missing.join(', ')} để giao nộp đơn hàng này!`, 'warning');
+            }
+            return;
+        }
+
+        // Bắt đầu quy trình xem 2 quảng cáo trước khi trả nhiệm vụ
+        this.isVndQuestBusy = true;
+        const adManager = window.monetagManager || window.adsgramManager;
+        const toast = (msg, type) => {
+            if (adManager?.showToast) adManager.showToast(msg, type);
+            else alert(msg);
+        };
+
+        try {
+            toast(`🎬 Bắt đầu trả nhiệm vụ: Đang phát Quảng Cáo (1/2)... Vui lòng xem hết để nhận +${quest.rewardVnd}đ VND!`, 'info');
+
+            // Quảng cáo 1
+            const ad1 = adManager ? await adManager.showRewardAd('vnd_quest_ad1', true) : true;
+            if (!ad1) {
+                toast('⚠️ Bạn chưa hoàn thành Quảng Cáo 1/2! Chưa thể trả nhiệm vụ.', 'warning');
+                this.isVndQuestBusy = false;
+                return;
+            }
+
+            toast('✅ Đã xong Quảng Cáo 1/2! Đang chuẩn bị mở tiếp Quảng Cáo 2/2...', 'info');
+            await new Promise(r => setTimeout(r, 1000));
+
+            toast(`🎬 Đang phát Quảng Cáo (2/2)... Xem hết để hoàn tất trả nhiệm vụ nhận +${quest.rewardVnd}đ VND!`, 'info');
+
+            // Quảng cáo 2
+            const ad2 = adManager ? await adManager.showRewardAd('vnd_quest_ad2', true) : true;
+            if (!ad2) {
+                toast('⚠️ Bạn chưa hoàn thành Quảng Cáo 2/2! Chưa thể nhận thưởng VND.', 'warning');
+                this.isVndQuestBusy = false;
+                return;
+            }
+
+            // Xem xong cả 2 quảng cáo -> Trừ vật phẩm trong kho
+            quest.requirements.forEach(r => {
+                if (this.data.inventory?.[r.id]) {
+                    this.data.inventory[r.id] -= r.qty;
+                    if (this.data.inventory[r.id] <= 0) {
+                        delete this.data.inventory[r.id];
+                    }
+                }
+            });
+
+            // Cộng tiền mặt VND
+            this.data.vnd = Math.round((Number(this.data.vnd || 0) + quest.rewardVnd) * 10) / 10;
+            this.data.vndQuests.claimed[questId] = true;
+
+            if (window.soundManager) window.soundManager.play('complete');
+            if (window.sound?.playFanfare) window.sound.playFanfare();
+            toast(`🎉 Trả nhiệm vụ thành công! Bạn nhận ngay +${quest.rewardVnd.toLocaleString('vi-VN')}đ VND vào số dư ví!`, 'success');
+            this.spawnFloatingText(`+${quest.rewardVnd.toLocaleString('vi-VN')}đ 💵`);
+
+            this.isServerSyncDirty = true;
+            this.save();
+            this.renderAll();
+            this.renderVndMerchantUI();
+        } catch (err) {
+            console.error('Lỗi khi trả nhiệm vụ VND:', err);
+            toast('Có lỗi xảy ra khi xử lý quảng cáo. Vui lòng thử lại!', 'error');
+        } finally {
+            this.isVndQuestBusy = false;
+        }
+    }
+
+    updateVndQuestNotificationDot() {
+        if (!this.data.vndQuests || this.data.vndQuests.date !== this.getTodayDateKey()) {
+            this.data.vndQuests = { date: this.getTodayDateKey(), claimed: {} };
+        }
+        const isVip = this.hasVipPass();
+        let hasReady = false;
+        const quests = this.getAllVndMerchantQuests();
+        quests.forEach(q => {
+            const isClaimed = !!this.data.vndQuests.claimed?.[q.id];
+            const isLockedVip = q.isVipOnly && !isVip;
+            if (!isClaimed && !isLockedVip) {
+                let allOk = true;
+                q.requirements.forEach(r => {
+                    const have = this.data.inventory?.[r.id] || 0;
+                    if (have < r.qty) allOk = false;
+                });
+                if (allOk) hasReady = true;
+            }
+        });
+        const dot = document.getElementById('vnd-quest-header-dot');
+        if (dot) dot.classList.toggle('hidden', !hasReady);
+        const stallDot = document.getElementById('vnd-stall-notify-dot');
+        if (stallDot) stallDot.classList.toggle('hidden', !hasReady);
+    }
+
+    // ==========================================
     // GAME TICK & EVENT LISTENERS
     // ==========================================
     updateTick() {
@@ -9144,6 +9649,24 @@ class GameEngine {
         document.getElementById('btn-close-quests-bottom').addEventListener('click', () => {
             modalQuests.classList.add('hidden');
         });
+
+        // NPC Thương Lái Hoàng Gia (Trả nhiệm vụ nhận tiền mặt VND)
+        const btnOpenVndTop = document.getElementById('btn-open-vnd-merchant-top');
+        if (btnOpenVndTop) {
+            btnOpenVndTop.addEventListener('click', () => this.openVndMerchantModal());
+        }
+        const btnOpenVndStall = document.getElementById('btn-open-vnd-merchant');
+        if (btnOpenVndStall) {
+            btnOpenVndStall.addEventListener('click', () => this.openVndMerchantModal());
+        }
+        const btnCloseVnd = document.getElementById('btn-close-vnd-merchant');
+        if (btnCloseVnd) {
+            btnCloseVnd.addEventListener('click', () => this.closeVndMerchantModal());
+        }
+        const btnCloseVndBottom = document.getElementById('btn-close-vnd-merchant-bottom');
+        if (btnCloseVndBottom) {
+            btnCloseVndBottom.addEventListener('click', () => this.closeVndMerchantModal());
+        }
 
         // Cần Câu VIP Modal (Mua bằng Vàng để câu Cá To hoặc Dùng Thử Adsgram)
         const modalVipRod = document.getElementById('modal-vip-rod');
